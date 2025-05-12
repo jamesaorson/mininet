@@ -1,7 +1,14 @@
 
 name: code-check
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+  workflow_dispatch:
 
 jobs:
   code-check:
@@ -17,6 +24,6 @@ jobs:
       - name: Install Mininet code check dependencies
         run: |
           PYTHON=`which python` util/install.sh -n
-          python -m pip install pylint==2.15.7
+          python -m pip install pylint==2.15.7 pep8 pyflakes
       - name: Run code check
-        run:  make codecheck
+        run: make codecheck

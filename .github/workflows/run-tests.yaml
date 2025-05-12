@@ -1,7 +1,14 @@
 
 name: mininet-tests
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+  workflow_dispatch:
 
 jobs:
   test:
