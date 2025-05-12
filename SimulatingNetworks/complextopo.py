@@ -54,7 +54,7 @@ class ComplexTopo(Topo):
             self.make_link(*link)
 
     def make_host(self, name: str):
-        return self.addHost(name, **self.host_confi)
+        return self.addHost(name, **self.host_config)
 
     def make_switch(self, name: str):
         return self.addSwitch(name)
