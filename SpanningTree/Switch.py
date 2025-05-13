@@ -74,17 +74,63 @@ class Switch(StpSwitch):
         """
         super(Switch, self).__init__(idNum, topolink, neighbors)
         # TODO: Define class members to keep track of which links are part of the spanning tree
+        self.root: int = idNum
+        self.distance: int = 0
+        self.closest_neighbor: int = None
+        self.active_links: set[int] = set()
 
     def process_message(self, message: Message):
-        """
-        Processes the messages from other switches. Updates its own data (members),
-        if necessary, and sends messages to its neighbors, as needed.
-
-        message: Message
-            the Message received from other Switches
-        """
         # TODO: This function needs to accept an incoming message and process it accordingly.
         #      This function is called every time the switch receives a new message.
+        
+        # INSTRUCTIONS FROM THE CLASS LECTURE:
+        # a) The root of the configuration has a smaller ID, or if
+        # In addition, a node stops sending configuration messages over
+        # a link (port) when the node receives a configuration message
+        # that indicates that it is not the root, e.g., when it receives
+        # a configuration message from a neighbor that is
+        if message.root < self.root:
+            self.root = message.root
+            self.distance = message.distance + 1
+            self.swap_closest_neighbor(message)
+        # b) The roots have equal IDs, but
+        elif message.root == self.root:
+            # c) Both roots IDs are the same and the distances are the same, then
+            # the node breaks the tie by selecting the configuration
+            # of the sending node that has the smallest ID.
+            # a) either closer to the root, or
+            if message.distance + 1 < self.distance:
+                self.distance = message.distance + 1
+                self.swap_closest_neighbor(message)
+            # b) has the same distance from the root, but it has a smaller ID.
+            elif message.distance + 1 == self.distance:
+                if message.origin < self.closest_neighbor:
+                    self.swap_closest_neighbor(message)
+            # FROM THE PROJECT PDF:
+            # If the message has a larger distance from the root, we need to check
+            # if we are the closest neighbor. If so, we add the link, else we need
+            # to remove the link
+            elif message.distance + 1 > self.distance:
+                if message.pathThrough:
+                    self.active_links.add(message.origin)
+                    self.send_to_neighbors(message.ttl)
+                else:
+                    self.active_links.discard(message.origin)
+
+    def swap_closest_neighbor(self, message: Message):
+        self.closest_neighbor = message.origin
+        self.active_links = {self.closest_neighbor}
+        self.send_to_neighbors(message.ttl)
+
+    def send_to_neighbors(self, ttl: int):
+        for neighbor in self.links:
+            msg = Message(self.root,
+                          self.distance,
+                          self.switchID,
+                          neighbor,
+                          neighbor == self.closest_neighbor,
+                          ttl - 1)
+            self.send_message(msg)
 
     def generate_logstring(self):
         """
@@ -106,4 +152,6 @@ class Switch(StpSwitch):
         #      2 - 1, 2 - 3
         #
         #      A full example of a valid output file is included (Logs/) in the project skeleton.
-        return "# - #, # - #, # - #"
+        return ", ".join(
+            f"{self.switchID} - {link}" for link in sorted(self.active_links)
+        )
