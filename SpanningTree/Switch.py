@@ -74,6 +74,10 @@ class Switch(StpSwitch):
         """
         super(Switch, self).__init__(idNum, topolink, neighbors)
         # TODO: Define class members to keep track of which links are part of the spanning tree
+        self.root: int = idNum
+        self.root_distance: int = 0
+        self.closest_neighbor: int = None
+        self.active_links: set[int] = set()
 
     def process_message(self, message: Message):
         """
@@ -84,7 +88,52 @@ class Switch(StpSwitch):
             the Message received from other Switches
         """
         # TODO: This function needs to accept an incoming message and process it accordingly.
-        #      This function is called every time the switch receives a new message.
+        #      This function is called every time theF switch receivupdate_closest_neighbores a new message.
+        if message.root < self.root:
+            # If message is closer to the real root, update our root
+            self.root = message.root
+            self.root_distance = message.distance + 1
+            self.update_closest_neighbor(message)
+        elif message.root == self.root:
+            # If message is from the same root, check the distance
+            if message.distance + 1 < self.root_distance:
+                # If the distance is less than our own, update our root distance
+                self.root_distance = message.distance + 1
+                self.update_closest_neighbor(message)
+            elif message.distance + 1 == self.root_distance:
+                # If the distance is the same, check if the message
+                # came from a closer neighbor
+                if (
+                    self.closest_neighbor is None
+                    or message.origin < self.closest_neighbor
+                ):
+                    self.update_closest_neighbor(message)
+        if message.pathThrough:
+            self.add_link(message.origin)
+        else:
+            self.delete_link(message.origin)
+        if message.ttl > 0:
+            for neighbor in self.links:
+                message_to_send = Message(
+                    self.root,
+                    self.root_distance,
+                    self.switchID,
+                    neighbor,
+                    pathThrough=(neighbor == self.closest_neighbor),
+                    ttl=message.ttl - 1,
+                )
+                self.send_message(message_to_send)
+
+    def add_link(self, link: int):
+        self.active_links.add(link)
+
+    def delete_link(self, link: int):
+        self.active_links.discard(link)
+
+    def update_closest_neighbor(self, message: Message):
+        if self.closest_neighbor is not None:
+            self.delete_link(self.closest_neighbor)
+        self.closest_neighbor = message.origin
 
     def generate_logstring(self):
         """
@@ -106,4 +155,6 @@ class Switch(StpSwitch):
         #      2 - 1, 2 - 3
         #
         #      A full example of a valid output file is included (Logs/) in the project skeleton.
-        return "# - #, # - #, # - #"
+        return ", ".join(
+            f"{self.switchID} - {link}" for link in sorted(self.active_links)
+        )
