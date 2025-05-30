@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: SimpleTopo",
+            "name": "SimpleTopo",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/DistanceVector/run_topo.py",
@@ -16,6 +16,45 @@
                 "SimpleTopo.log",
             ],
             "postDebugTask": "Validate SimpleTopo"
-        }
+        },
+        {
+            "name": "ComplexTopo",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/DistanceVector/run_topo.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/DistanceVector",
+            "args": [
+                "ComplexTopo.txt",
+                "ComplexTopo.log",
+            ],
+            "postDebugTask": "Validate ComplexTopo"
+        },
+        {
+            "name": "SimpleNegativeCycleTopo",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/DistanceVector/run_topo.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/DistanceVector",
+            "args": [
+                "SimpleNegativeCycleTopo.txt",
+                "SimpleNegativeCycleTopo.log",
+            ],
+            "postDebugTask": "Validate SimpleNegativeCycleTopo"
+        },
+        {
+            "name": "SingleLoopTopo",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/DistanceVector/run_topo.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/DistanceVector",
+            "args": [
+                "SingleLoopTopo.txt",
+                "SingleLoopTopo.log",
+            ],
+            "postDebugTask": "Validate SingleLoopTopo"
+        },
     ]
 }
