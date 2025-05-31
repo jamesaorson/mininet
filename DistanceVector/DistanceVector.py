@@ -39,14 +39,21 @@ class DistanceVector(Node):
             # Distance to self is always 0
             self.name: 0
         }
-        for neighbor in self.outgoing_links:
-            self.distances[neighbor.name] = int(neighbor.weight)
+        # for neighbor in self.outgoing_links:
+        #     self.distances[neighbor.name] = int(neighbor.weight)
 
         self.MIN_DISTANCE = -99
         # TODO: Create any necessary data structure(s) to contain the Node's internal state / distance vector data
 
     def new_message(self):
         return DistanceVector.Message(self.name, self.distances)
+
+    def get_weight(self, node_name: str) -> int:
+        _, weight = self.get_outgoing_neighbor_weight(node_name)
+        return int(weight)
+
+    def is_outgoing_neighbor(self, node_name: str) -> bool:
+        return any(neighbor.name == node_name for neighbor in self.outgoing_links)
 
     def send_to_incoming(self):
         for link in self.incoming_links:
@@ -74,18 +81,35 @@ class DistanceVector(Node):
         # TODO 1. Process queued messages
         is_updated = False
         for message in self.messages:
-            for node, distance in message.distances.items():
+            for node in message.distances.keys():
                 if node == self.name:
                     continue
-                new_distance = max(self.distances[message.sender] + distance, self.MIN_DISTANCE)
-                if new_distance < -50:
-                    new_distance = self.MIN_DISTANCE
                 if node in self.distances:
-                    if new_distance < self.distances[node]:
-                        self.distances[node] = new_distance
+                    message_distance = self.get_weight(message.sender)
+                    distance_to_node = message.distances[node]
+
+                    # If either is a negative cycle, set the distance to a negative cycle
+                    if (
+                        message_distance <= self.MIN_DISTANCE
+                        or distance_to_node <= self.MIN_DISTANCE
+                        and self.distances[node] != self.MIN_DISTANCE
+                    ):
+                        self.distances[node] = self.MIN_DISTANCE
                         is_updated = True
+                    else:
+                        # Only set the value if it is strictly less than the current distance
+                        new_distance = max(
+                            message_distance + distance_to_node, self.MIN_DISTANCE
+                        )
+                        if new_distance < self.distances[node]:
+                            self.distances[node] = new_distance
+                            is_updated = True
                 else:
-                    self.distances[node] = new_distance
+                    self.distances[node] = (
+                        self.get_weight(node)
+                        if self.is_outgoing_neighbor(node)
+                        else (self.get_weight(message.sender) + message.distances[node])
+                    )
                     is_updated = True
 
         # Empty queue
@@ -94,9 +118,6 @@ class DistanceVector(Node):
         # TODO 2. Send neighbors updated distances
         if is_updated:
             self.send_to_incoming()
-
-    def is_outgoing_neighbor(self, node_name: str) -> bool:
-        return any(neighbor.name == node_name for neighbor in self.outgoing_links)
 
     def log_distances(self):
         """This function is called immedately after process_BF each round.  It
