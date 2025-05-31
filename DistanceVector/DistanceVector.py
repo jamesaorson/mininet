@@ -20,12 +20,18 @@ from helpers import *
 
 
 class DistanceVector(Node):
+    class Path:
+        def __init__(self, distance: int, path: set):
+            self.distance = distance
+            self.path = path.copy()
+        
+        def add(self, node: str):
+            self.path.add(node)
 
     class Message:
-        def __init__(self, sender, distances: dict):
-            """Constructor. This is run once when the Message object is created."""
+        def __init__(self, sender: str, paths: dict[str, 'DistanceVector.Path']):
             self.sender = sender
-            self.distances = distances.copy()
+            self.paths = paths.copy()
 
     def __init__(self, name, topolink, outgoing_links, incoming_links):
         """Constructor. This is run once when the DistanceVector object is
@@ -35,18 +41,25 @@ class DistanceVector(Node):
         super(DistanceVector, self).__init__(
             name, topolink, outgoing_links, incoming_links
         )
-        self.distances = {
+        self.paths = {
             # Distance to self is always 0
-            self.name: 0
+            self.name: DistanceVector.Path(0, {self.name}),
         }
         for neighbor in self.outgoing_links:
-            self.distances[neighbor.name] = int(neighbor.weight)
+            self.paths[neighbor.name] = DistanceVector.Path(
+                int(neighbor.weight),
+                {self.name, neighbor.name}
+            )
 
         self.MIN_DISTANCE = -99
         # TODO: Create any necessary data structure(s) to contain the Node's internal state / distance vector data
 
     def new_message(self):
-        return DistanceVector.Message(self.name, self.distances)
+        return DistanceVector.Message(self.name, self.paths)
+
+    def send_to_incoming(self):
+        for link in self.incoming_links:
+            self.send_msg(self.new_message(), link.name)
 
     def send_initial_messages(self):
         """This is run once at the beginning of the simulation, after all
@@ -59,8 +72,7 @@ class DistanceVector(Node):
 
         # TODO - Each node needs to build a message and send it to each of its neighbors
         # HINT: Take a look at the skeleton methods provided for you in Node.py
-        for link in self.incoming_links:
-            self.send_msg(self.new_message(), link.name)
+        self.send_to_incoming()
 
     def process_BF(self):
         """This is run continuously (repeatedly) during the simulation. DV
@@ -71,18 +83,20 @@ class DistanceVector(Node):
         # TODO 1. Process queued messages
         is_updated = False
         for message in self.messages:
-            for node, distance in message.distances.items():
+            for node, path in message.paths.items():
                 if node == self.name:
                     continue
-                new_distance = max(self.distances[message.sender] + distance, self.MIN_DISTANCE) if (
-                    self.distances[message.sender] != self.MIN_DISTANCE and distance != self.MIN_DISTANCE
+                if self.name in path.path:
+                    continue
+                new_distance = max(self.paths[message.sender].distance + path.distance, self.MIN_DISTANCE) if (
+                    self.paths[message.sender] != self.MIN_DISTANCE and path.distance != self.MIN_DISTANCE
                 ) else self.MIN_DISTANCE
-                if node in self.distances:
-                    if new_distance < self.distances[node]:
-                        self.distances[node] = new_distance
+                if node in self.paths:
+                    if new_distance < self.paths[node].distance:
+                        self.paths[node].distance = new_distance
                         is_updated = True
                 else:
-                    self.distances[node] = new_distance
+                    self.paths[node] = DistanceVector.Path(new_distance, {self.name, message.sender})
                     is_updated = True
 
         # Empty queue
@@ -90,7 +104,13 @@ class DistanceVector(Node):
 
         # TODO 2. Send neighbors updated distances
         if is_updated:
-            self.send_initial_messages()
+            self.send_to_incoming()
+
+    def is_outgoing_neighbor(self, node_name: str) -> bool:
+        return any(neighbor.name == node_name for neighbor in self.outgoing_links)
+    
+    def is_incoming_neighbor(self, node_name: str) -> bool:
+        return any(neighbor.name == node_name for neighbor in self.incoming_links)
 
     def log_distances(self):
         """This function is called immedately after process_BF each round.  It
@@ -108,6 +128,6 @@ class DistanceVector(Node):
         add_entry(
             self.name,
             " ".join(
-                f"({name},{distance})" for name, distance in self.distances.items()
+                f"({name},{path.distance})" for name, path in self.paths.items()
             ),
         )
