@@ -1,0 +1,140 @@
+AA:(AA,0) (AD,-2) (AB,-1)
+AB:(AB,0) (AA,-1) (CC,0) (AD,-3)
+AD:(AD,0) (AB,1) (AA,0) (CC,1)
+CC:(CC,0) (AB,0) (AA,-1) (AD,-3)
+-----
+AA:(AA,0) (AD,-2) (AB,-1) (CC,-1)
+AB:(AB,0) (AA,-1) (CC,-2) (AD,-3)
+AD:(AD,0) (AB,1) (AA,0) (CC,-1)
+CC:(CC,0) (AB,0) (AA,-1) (AD,-3)
+-----
+AA:(AA,0) (AD,-2) (AB,-1) (CC,-3)
+AB:(AB,0) (AA,-1) (CC,-4) (AD,-3)
+AD:(AD,0) (AB,1) (AA,0) (CC,-3)
+CC:(CC,0) (AB,0) (AA,-1) (AD,-3)
+-----
+AA:(AA,0) (AD,-2) (AB,-1) (CC,-5)
+AB:(AB,0) (AA,-1) (CC,-6) (AD,-3)
+AD:(AD,0) (AB,1) (AA,0) (CC,-5)
+CC:(CC,0) (AB,0) (AA,-1) (AD,-3)
+-----
+AA:(AA,0) (AD,-2) (AB,-1) (CC,-7)
+AB:(AB,0) (AA,-1) (CC,-8) (AD,-3)
+AD:(AD,0) (AB,1) (AA,0) (CC,-7)
+CC:(CC,0) (AB,0) (AA,-1) (AD,-3)
+-----
+AA:(AA,0) (AD,-2) (AB,-1) (CC,-9)
+AB:(AB,0) (AA,-1) (CC,-10) (AD,-3)
+AD:(AD,0) (AB,1) (AA,0) (CC,-9)
+CC:(CC,0) (AB,0) (AA,-1) (AD,-3)
+-----
+AA:(AA,0) (AD,-2) (AB,-1) (CC,-11)
+AB:(AB,0) (AA,-1) (CC,-12) (AD,-3)
+AD:(AD,0) (AB,1) (AA,0) (CC,-11)
+CC:(CC,0) (AB,0) (AA,-1) (AD,-3)
+-----
+AA:(AA,0) (AD,-2) (AB,-1) (CC,-13)
+AB:(AB,0) (AA,-1) (CC,-14) (AD,-3)
+AD:(AD,0) (AB,1) (AA,0) (CC,-13)
+CC:(CC,0) (AB,0) (AA,-1) (AD,-3)
+-----
+AA:(AA,0) (AD,-2) (AB,-1) (CC,-15)
+AB:(AB,0) (AA,-1) (CC,-16) (AD,-3)
+AD:(AD,0) (AB,1) (AA,0) (CC,-15)
+CC:(CC,0) (AB,0) (AA,-1) (AD,-3)
+-----
+AA:(AA,0) (AD,-2) (AB,-1) (CC,-17)
+AB:(AB,0) (AA,-1) (CC,-18) (AD,-3)
+AD:(AD,0) (AB,1) (AA,0) (CC,-17)
+CC:(CC,0) (AB,0) (AA,-1) (AD,-3)
+-----
+AA:(AA,0) (AD,-2) (AB,-1) (CC,-19)
+AB:(AB,0) (AA,-1) (CC,-20) (AD,-3)
+AD:(AD,0) (AB,1) (AA,0) (CC,-19)
+CC:(CC,0) (AB,0) (AA,-1) (AD,-3)
+-----
+AA:(AA,0) (AD,-2) (AB,-1) (CC,-21)
+AB:(AB,0) (AA,-1) (CC,-22) (AD,-3)
+AD:(AD,0) (AB,1) (AA,0) (CC,-21)
+CC:(CC,0) (AB,0) (AA,-1) (AD,-3)
+-----
+AA:(AA,0) (AD,-2) (AB,-1) (CC,-23)
+AB:(AB,0) (AA,-1) (CC,-24) (AD,-3)
+AD:(AD,0) (AB,1) (AA,0) (CC,-23)
+CC:(CC,0) (AB,0) (AA,-1) (AD,-3)
+-----
+AA:(AA,0) (AD,-2) (AB,-1) (CC,-25)
+AB:(AB,0) (AA,-1) (CC,-26) (AD,-3)
+AD:(AD,0) (AB,1) (AA,0) (CC,-25)
+CC:(CC,0) (AB,0) (AA,-1) (AD,-3)
+-----
+AA:(AA,0) (AD,-2) (AB,-1) (CC,-27)
+AB:(AB,0) (AA,-1) (CC,-28) (AD,-3)
+AD:(AD,0) (AB,1) (AA,0) (CC,-27)
+CC:(CC,0) (AB,0) (AA,-1) (AD,-3)
+-----
+AA:(AA,0) (AD,-2) (AB,-1) (CC,-29)
+AB:(AB,0) (AA,-1) (CC,-30) (AD,-3)
+AD:(AD,0) (AB,1) (AA,0) (CC,-29)
+CC:(CC,0) (AB,0) (AA,-1) (AD,-3)
+-----
+AA:(AA,0) (AD,-2) (AB,-1) (CC,-31)
+AB:(AB,0) (AA,-1) (CC,-32) (AD,-3)
+AD:(AD,0) (AB,1) (AA,0) (CC,-31)
+CC:(CC,0) (AB,0) (AA,-1) (AD,-3)
+-----
+AA:(AA,0) (AD,-2) (AB,-1) (CC,-33)
+AB:(AB,0) (AA,-1) (CC,-34) (AD,-3)
+AD:(AD,0) (AB,1) (AA,0) (CC,-33)
+CC:(CC,0) (AB,0) (AA,-1) (AD,-3)
+-----
+AA:(AA,0) (AD,-2) (AB,-1) (CC,-35)
+AB:(AB,0) (AA,-1) (CC,-36) (AD,-3)
+AD:(AD,0) (AB,1) (AA,0) (CC,-35)
+CC:(CC,0) (AB,0) (AA,-1) (AD,-3)
+-----
+AA:(AA,0) (AD,-2) (AB,-1) (CC,-37)
+AB:(AB,0) (AA,-1) (CC,-38) (AD,-3)
+AD:(AD,0) (AB,1) (AA,0) (CC,-37)
+CC:(CC,0) (AB,0) (AA,-1) (AD,-3)
+-----
+AA:(AA,0) (AD,-2) (AB,-1) (CC,-39)
+AB:(AB,0) (AA,-1) (CC,-40) (AD,-3)
+AD:(AD,0) (AB,1) (AA,0) (CC,-39)
+CC:(CC,0) (AB,0) (AA,-1) (AD,-3)
+-----
+AA:(AA,0) (AD,-2) (AB,-1) (CC,-41)
+AB:(AB,0) (AA,-1) (CC,-42) (AD,-3)
+AD:(AD,0) (AB,1) (AA,0) (CC,-41)
+CC:(CC,0) (AB,0) (AA,-1) (AD,-3)
+-----
+AA:(AA,0) (AD,-2) (AB,-1) (CC,-43)
+AB:(AB,0) (AA,-1) (CC,-44) (AD,-3)
+AD:(AD,0) (AB,1) (AA,0) (CC,-43)
+CC:(CC,0) (AB,0) (AA,-1) (AD,-3)
+-----
+AA:(AA,0) (AD,-2) (AB,-1) (CC,-45)
+AB:(AB,0) (AA,-1) (CC,-46) (AD,-3)
+AD:(AD,0) (AB,1) (AA,0) (CC,-45)
+CC:(CC,0) (AB,0) (AA,-1) (AD,-3)
+-----
+AA:(AA,0) (AD,-2) (AB,-1) (CC,-47)
+AB:(AB,0) (AA,-1) (CC,-48) (AD,-3)
+AD:(AD,0) (AB,1) (AA,0) (CC,-47)
+CC:(CC,0) (AB,0) (AA,-1) (AD,-3)
+-----
+AA:(AA,0) (AD,-2) (AB,-1) (CC,-49)
+AB:(AB,0) (AA,-1) (CC,-50) (AD,-3)
+AD:(AD,0) (AB,1) (AA,0) (CC,-49)
+CC:(CC,0) (AB,0) (AA,-1) (AD,-3)
+-----
+AA:(AA,0) (AD,-2) (AB,-1) (CC,-99)
+AB:(AB,0) (AA,-1) (CC,-99) (AD,-3)
+AD:(AD,0) (AB,1) (AA,0) (CC,-99)
+CC:(CC,0) (AB,0) (AA,-1) (AD,-3)
+-----
+AA:(AA,0) (AD,-2) (AB,-1) (CC,-99)
+AB:(AB,0) (AA,-1) (CC,-99) (AD,-3)
+AD:(AD,0) (AB,1) (AA,0) (CC,-99)
+CC:(CC,0) (AB,0) (AA,-1) (AD,-3)
+-----
