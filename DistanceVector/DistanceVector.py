@@ -71,17 +71,14 @@ class DistanceVector(Node):
         # TODO 1. Process queued messages
         is_updated = False
         for message in self.messages:
-            # Iterate through the distance vector from the message
             for node, distance in message.distances.items():
                 if node == self.name:
-                    # Skip the distance to self, since it is always 0
                     continue
                 new_distance = max(self.distances[message.sender] + distance, self.MIN_DISTANCE) if (
                     self.distances[message.sender] != self.MIN_DISTANCE and distance != self.MIN_DISTANCE
                 ) else self.MIN_DISTANCE
                 if node in self.distances:
-                    old_distance = self.distances[node]
-                    if new_distance < old_distance:
+                    if new_distance < self.distances[node]:
                         self.distances[node] = new_distance
                         is_updated = True
                 else:
