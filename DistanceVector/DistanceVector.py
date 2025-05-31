@@ -22,10 +22,10 @@ from helpers import *
 class DistanceVector(Node):
 
     class Message:
-        def __init__(self, sender, distances):
+        def __init__(self, sender, distances: dict):
             """Constructor. This is run once when the Message object is created."""
             self.sender = sender
-            self.distances = distances
+            self.distances = distances.copy()
 
     def __init__(self, name, topolink, outgoing_links, incoming_links):
         """Constructor. This is run once when the DistanceVector object is
@@ -78,12 +78,14 @@ class DistanceVector(Node):
                 if node == self.name:
                     # Skip the distance to self, since it is always 0
                     continue
-                # If I have not seen this neighbor before, set the distance immediately
-                new_distance = self.distances[message.sender] + distance
-                if node in self.distances and new_distance >= self.distances[node]:
-                    continue
-                if new_distance < self.MIN_DISTANCE:
-                    self.distances[node] = self.MIN_DISTANCE
+                new_distance = max(self.distances[message.sender] + distance, self.MIN_DISTANCE)
+                if node in self.distances:
+                    old_distance = self.distances[node]
+                    if new_distance >= old_distance:
+                        continue
+                    if new_distance != old_distance:
+                        self.distances[node] = new_distance
+                        is_updated = True
                 else:
                     self.distances[node] = new_distance
                     is_updated = True
