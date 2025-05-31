@@ -20,12 +20,10 @@ from helpers import *
 
 
 class DistanceVector(Node):
-
     class Message:
-        def __init__(self, sender, distances: dict):
-            """Constructor. This is run once when the Message object is created."""
-            self.sender = sender
-            self.distances = distances.copy()
+        def __init__(self, source, vector):
+            self.source = source
+            self.vector = vector
 
     def __init__(self, name, topolink, outgoing_links, incoming_links):
         """Constructor. This is run once when the DistanceVector object is
@@ -35,68 +33,68 @@ class DistanceVector(Node):
         super(DistanceVector, self).__init__(
             name, topolink, outgoing_links, incoming_links
         )
-        self.distances = {
-            # Distance to self is always 0
-            self.name: 0
-        }
-        for neighbor in self.outgoing_links:
-            self.distances[neighbor.name] = int(neighbor.weight)
-
+        self.vector = {self.name: 0}
         self.MIN_DISTANCE = -99
-        # TODO: Create any necessary data structure(s) to contain the Node's internal state / distance vector data
-
-    def new_message(self):
-        return DistanceVector.Message(self.name, self.distances)
-
-    def send_to_incoming(self):
-        for link in self.incoming_links:
-            self.send_msg(self.new_message(), link.name)
 
     def send_initial_messages(self):
-        """This is run once at the beginning of the simulation, after all
-        DistanceVector objects are created and their links to each other are
-        established, but before any of the rest of the simulation begins. You
-        can have nodes send out their initial DV advertisements here.
+        self.send_to_incoming_links()
 
-        Remember that links points to a list of Neighbor data structure.  Access
-        the elements with .name or .weight"""
+    def send_to_incoming_links(self):
+        for link in self.incoming_links:
+            message = DistanceVector.Message(
+                self.name,
+                self.vector.copy(),
+            )
+            self.send_msg(message, link.name)
 
-        # TODO - Each node needs to build a message and send it to each of its neighbors
-        # HINT: Take a look at the skeleton methods provided for you in Node.py
-        self.send_to_incoming()
+    def get_weight(self, name):
+        _, weight = self.get_outgoing_neighbor_weight(name)
+        return int(weight)
 
     def process_BF(self):
-        """This is run continuously (repeatedly) during the simulation. DV
-        messages from other nodes are received here, processed, and any new DV
-        messages that need to be sent to other nodes as a result are sent."""
-
-        # Implement the Bellman-Ford algorithm here.  It must accomplish two tasks below:
-        # TODO 1. Process queued messages
         is_updated = False
-        for message in self.messages:
-            for node, distance in message.distances.items():
-                if node == self.name:
-                    continue
-                new_distance = max(self.distances[message.sender] + distance, self.MIN_DISTANCE)
-                if new_distance < -50:
-                    new_distance = self.MIN_DISTANCE
-                if node in self.distances:
-                    if new_distance < self.distances[node]:
-                        self.distances[node] = new_distance
-                        is_updated = True
-                else:
-                    self.distances[node] = new_distance
+        for msg in self.messages:
+            for node in msg.vector.keys():
+                if node not in self.vector and node != self.name:
+                    if self.is_outgoing_neighbor(node):
+                        nodeWeight = int(self.get_weight(node))
+                    else:
+                        nodeWeight = int(self.get_weight(msg.source)) + int(
+                            msg.vector[node]
+                        )
+                    self.vector[node] = nodeWeight
                     is_updated = True
+                elif node in self.vector and node != self.name:
+                    sourceNode_to_vector = int(self.get_weight(msg.source))
+                    vector_to_sourceNode = int(msg.vector[node])
+                    updated_distance = sourceNode_to_vector + vector_to_sourceNode
 
-        # Empty queue
+                    if (
+                        sourceNode_to_vector <= self.MIN_DISTANCE
+                        or vector_to_sourceNode <= self.MIN_DISTANCE
+                        and self.vector[node] != self.MIN_DISTANCE
+                    ):
+                        self.vector[node] = self.MIN_DISTANCE
+                        is_updated = True
+                    else:
+                        if (
+                            updated_distance < self.vector[node]
+                            and updated_distance > self.MIN_DISTANCE
+                        ):
+                            self.vector[node] = updated_distance
+                            is_updated = True
+                        elif (
+                            updated_distance <= self.MIN_DISTANCE
+                            and self.vector[node] != self.MIN_DISTANCE
+                        ):
+                            self.vector[node] = self.MIN_DISTANCE
+                            is_updated = True
         self.messages = []
-
-        # TODO 2. Send neighbors updated distances
         if is_updated:
-            self.send_to_incoming()
+            self.send_to_incoming_links()
 
-    def is_outgoing_neighbor(self, node_name: str) -> bool:
-        return any(neighbor.name == node_name for neighbor in self.outgoing_links)
+    def is_outgoing_neighbor(self, name):
+        return any(link.name == name for link in self.outgoing_links)
 
     def log_distances(self):
         """This function is called immedately after process_BF each round.  It
@@ -113,7 +111,5 @@ class DistanceVector(Node):
         # An example call that which prints the format example text above (hardcoded) is provided.
         add_entry(
             self.name,
-            " ".join(
-                f"({name},{distance})" for name, distance in self.distances.items()
-            ),
+            " ".join(f"({name},{distance})" for name, distance in self.vector.items()),
         )
