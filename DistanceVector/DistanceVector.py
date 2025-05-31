@@ -60,9 +60,7 @@ class DistanceVector(Node):
         # TODO - Each node needs to build a message and send it to each of its neighbors
         # HINT: Take a look at the skeleton methods provided for you in Node.py
         for link in self.incoming_links:
-            if link.name != self.name:
-                message = self.new_message()
-                self.send_msg(message, link.name)
+            self.send_msg(self.new_message(), link.name)
 
     def process_BF(self):
         """This is run continuously (repeatedly) during the simulation. DV
@@ -78,11 +76,11 @@ class DistanceVector(Node):
                 if node == self.name:
                     # Skip the distance to self, since it is always 0
                     continue
-                new_distance = max(self.distances[message.sender] + distance, self.MIN_DISTANCE)
+                new_distance = max(self.distances[message.sender] + distance, self.MIN_DISTANCE) if (
+                    self.distances[message.sender] != self.MIN_DISTANCE and distance != self.MIN_DISTANCE
+                ) else self.MIN_DISTANCE
                 if node in self.distances:
                     old_distance = self.distances[node]
-                    if new_distance >= old_distance:
-                        continue
                     if new_distance < old_distance:
                         self.distances[node] = new_distance
                         is_updated = True
@@ -113,6 +111,6 @@ class DistanceVector(Node):
         add_entry(
             self.name,
             " ".join(
-                f"({node},{distance})" for node, distance in self.distances.items()
+                f"({name},{self.distances[name]})" for name in sorted(self.distances.keys())
             ),
         )
