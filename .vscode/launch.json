@@ -14,8 +14,7 @@
             "args": [
                 "SimpleTopo.txt",
                 "SimpleTopo.log",
-            ],
-            "postDebugTask": "Validate SimpleTopo"
+            ]
         },
         {
             "name": "ComplexTopo",
@@ -27,8 +26,7 @@
             "args": [
                 "ComplexTopo.txt",
                 "ComplexTopo.log",
-            ],
-            "postDebugTask": "Validate ComplexTopo"
+            ]
         },
         {
             "name": "SimpleNegativeCycleTopo",
@@ -40,8 +38,7 @@
             "args": [
                 "SimpleNegativeCycleTopo.txt",
                 "SimpleNegativeCycleTopo.log",
-            ],
-            "postDebugTask": "Validate SimpleNegativeCycleTopo"
+            ]
         },
         {
             "name": "SingleLoopTopo",
@@ -53,8 +50,7 @@
             "args": [
                 "SingleLoopTopo.txt",
                 "SingleLoopTopo.log",
-            ],
-            "postDebugTask": "Validate SingleLoopTopo"
+            ]
         },
     ]
 }
