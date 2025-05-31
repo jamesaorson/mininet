@@ -108,6 +108,6 @@ class DistanceVector(Node):
         add_entry(
             self.name,
             " ".join(
-                f"({name},{self.distances[name]})" for name in sorted(self.distances.keys())
+                f"({name},{distance})" for name, distance in self.distances.items()
             ),
         )
