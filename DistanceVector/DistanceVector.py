@@ -48,6 +48,10 @@ class DistanceVector(Node):
     def new_message(self):
         return DistanceVector.Message(self.name, self.distances)
 
+    def send_to_incoming(self):
+        for link in self.incoming_links:
+            self.send_msg(self.new_message(), link.name)
+
     def send_initial_messages(self):
         """This is run once at the beginning of the simulation, after all
         DistanceVector objects are created and their links to each other are
@@ -59,8 +63,7 @@ class DistanceVector(Node):
 
         # TODO - Each node needs to build a message and send it to each of its neighbors
         # HINT: Take a look at the skeleton methods provided for you in Node.py
-        for link in self.incoming_links:
-            self.send_msg(self.new_message(), link.name)
+        self.send_to_incoming()
 
     def process_BF(self):
         """This is run continuously (repeatedly) during the simulation. DV
@@ -74,9 +77,9 @@ class DistanceVector(Node):
             for node, distance in message.distances.items():
                 if node == self.name:
                     continue
-                new_distance = max(self.distances[message.sender] + distance, self.MIN_DISTANCE) if (
-                    self.distances[message.sender] != self.MIN_DISTANCE and distance != self.MIN_DISTANCE
-                ) else self.MIN_DISTANCE
+                new_distance = max(self.distances[message.sender] + distance, self.MIN_DISTANCE)
+                if new_distance < -50:
+                    new_distance = self.MIN_DISTANCE
                 if node in self.distances:
                     if new_distance < self.distances[node]:
                         self.distances[node] = new_distance
@@ -90,7 +93,10 @@ class DistanceVector(Node):
 
         # TODO 2. Send neighbors updated distances
         if is_updated:
-            self.send_initial_messages()
+            self.send_to_incoming()
+
+    def is_outgoing_neighbor(self, node_name: str) -> bool:
+        return any(neighbor.name == node_name for neighbor in self.outgoing_links)
 
     def log_distances(self):
         """This function is called immedately after process_BF each round.  It
