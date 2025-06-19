@@ -72,8 +72,12 @@ class Policy:
         self.mac_dst = (
             EthAddr(policy_dict["mac-dst"]) if policy_dict["mac-dst"] != "-" else None
         )
-        self.ip_src = policy_dict["ip-src"]
-        self.ip_dst = policy_dict["ip-dst"]
+        self.ip_src = (
+            IPAddr(policy_dict["ip-src"]) if policy_dict["ip-src"] != "-" else None
+        )
+        self.ip_dst = (
+            IPAddr(policy_dict["ip-dst"]) if policy_dict["ip-dst"] != "-" else None
+        )
         self.ip_protocol = (
             int(policy_dict["ipprotocol"]) if policy_dict["ipprotocol"] != "-" else None
         )
