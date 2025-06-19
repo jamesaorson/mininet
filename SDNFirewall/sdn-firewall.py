@@ -99,7 +99,7 @@ def firewall_policy_processing(policies):
         print(policy)
 
         # End Code Here
-        print("Added Rule ", policy["rulenum"], ": ", policy["comment"])
+        print("Added Rule ", policy.rulenum, ": ", policy.comment)
         # print(rule)   #Uncomment this to debug your "rule"
         rules.append(rule)
 
