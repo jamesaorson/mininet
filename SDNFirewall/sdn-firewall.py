@@ -26,6 +26,31 @@ class Policy:
     PRIORITY_BLOCK = 0
     PRIORITY_ALLOW = 10001
 
+    """
+    - of.OFPP_IN_PORT - This action will send the port back to the sender (i.e., the port it came
+                        into the network on)
+    - of.OFPP_NORMAL - Process the packet and handle via a normal L2/L3 legacy switch
+                        configuration (i.e., send traffic to its destination without modification) -
+                        See https://study-ccna.com/layer-3-switch/ for information on how normal
+                        L2/L3 legacy switches work.
+    - of.OFPP_FLOOD - This action will cause the traffic to be sent out to all ports except the
+                        source (IN_PORT) and any ports that have flooding turned off. This is very
+                        chatty and can be used to do network based attacks (see UDP Amplifications).
+                        This should be avoided.
+    - of.OFPP_ALL - output all OpenFlow ports except the source (IN_PORT). This is the same as
+                    FLOOD but it includes ports that have had flood turned off.
+    - of.OFPP_CONTROLLER - This action sends the packet to the switch controller. What
+                            happens with the port depends on the state of the switch controller.
+                            Thus it may work, but also may not work, based on the current state
+                            of the switch.
+    """
+    # Found in libopenflow_01.py in the POX source code.
+    OFPP_IN_PORT = 65528
+    OFPP_NORMAL = 65530
+    OFPP_FLOOD = 65531
+    OFPP_ALL = 65532
+    OFPP_CONTROLLER = 65533
+
     def __init__(self, policy_dict: dict):
         """
         - policy["mac-src"] = Source MAC Address (00:00:00:00:00:00) or “-“
@@ -47,13 +72,11 @@ class Policy:
         self.mac_dst = (
             EthAddr(policy_dict["mac-dst"]) if policy_dict["mac-dst"] != "-" else None
         )
-        self.ip_src = (
-            IPAddr(policy_dict["ip-src"]) if policy_dict["ip-src"] != "-" else None
+        self.ip_src = policy_dict["ip-src"]
+        self.ip_dst = policy_dict["ip-dst"]
+        self.ip_protocol = (
+            int(policy_dict["ipprotocol"]) if policy_dict["ipprotocol"] != "-" else None
         )
-        self.ip_dst = (
-            IPAddr(policy_dict["ip-dst"]) if policy_dict["ip-dst"] != "-" else None
-        )
-        self.ip_protocol = policy_dict["ipprotocol"]
         self.port_src = (
             int(policy_dict["port-src"]) if policy_dict["port-src"] != "-" else None
         )
@@ -62,16 +85,41 @@ class Policy:
         )
         self.comment = policy_dict["comment"]
 
+    def _make_match(self) -> of.ofp_match:
+        matchobj = of.ofp_match()
+        # Set Ethernet type to IPv4
+        matchobj.dl_type = pkt.ethernet.IP_TYPE
+
+        if self.mac_src is not None:
+            matchobj.dl_src = self.mac_src
+        if self.mac_dst is not None:
+            matchobj.dl_dst = self.mac_dst
+        if self.ip_src is not None:
+            matchobj.nw_src = self.ip_src
+        if self.ip_dst is not None:
+            matchobj.nw_dst = self.ip_dst
+        if self.port_src is not None:
+            matchobj.tp_src = self.port_src
+        if self.port_dst is not None:
+            matchobj.tp_dst = self.port_dst
+        if self.ip_protocol is not None:
+            matchobj.nw_proto = self.ip_protocol
+
+        return matchobj
+
     def make_rule(self) -> of.ofp_flow_mod:
         rule = of.ofp_flow_mod()
-        # hardcode as ipv4
-        rule.match.dl_type = pkt.ethernet.IP_TYPE
         rule.priority = (
             self.PRIORITY_ALLOW
             if self.action.lower() == "allow"
             else self.PRIORITY_BLOCK
         )
-        rule.match = of.ofp_match()
+        rule.match = self._make_match()
+        # If blocking, we do not need to add an action
+        if self.action.lower() == "block":
+            return rule
+        rule.actions.append(of.ofp_action_output(port=self.OFPP_CONTROLLER))
+        return rule
 
 
 def firewall_policy_processing(policies):
