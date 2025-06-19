@@ -12,7 +12,7 @@ from pox.lib.addresses import IPAddr, EthAddr
 # may need to complete your firewall implementation.  No additional functions "should" be required to complete
 # this assignment.
 
-"""
+"""Instructions:
 1. Create an OpenFlow Flow Modification object
 2. Create a POX Packet Matching object that will integrate the elements from a single entry in
    the firewall configuration rule file (which is passed in the policy dictionary) to match the
