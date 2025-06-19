@@ -8,13 +8,22 @@ import pox.lib.packet as pkt
 from pox.lib.revent import *
 from pox.lib.addresses import IPAddr, EthAddr
 
-# You may use this space before the firewall_policy_processing function to add any extra function that you 
+# You may use this space before the firewall_policy_processing function to add any extra function that you
 # may need to complete your firewall implementation.  No additional functions "should" be required to complete
 # this assignment.
 
+"""
+1. Create an OpenFlow Flow Modification object
+2. Create a POX Packet Matching object that will integrate the elements from a single entry in
+   the firewall configuration rule file (which is passed in the policy dictionary) to match the
+   different IP and TCP/UDP headers if there is anything to match (i.e., no “-“ should be passed
+   to the match object, nor should None be passed to a match object if a “-“ is provided).
+3. Create a POX Output Action, if needed, to specify what to do with the traffic.
+"""
+
 
 def firewall_policy_processing(policies):
-    '''
+    """
     This is where you are to implement your code that will build POX/Openflow Match and Action operations to
     create a dynamic firewall meeting the requirements specified in your configure.pol file.  Do NOT hardcode
     the IP/MAC Addresses/Protocols/Ports that are specified in the project description - this code should use
@@ -22,7 +31,7 @@ def firewall_policy_processing(policies):
 
     The policies passed to this function is a list of dictionary objects that contain the data imported from the
     configure.pol file.  The policy variable in the "for policy in policies" represents a single line from the
-    configure.pol file.  Each of the configuration values are then accessed using the policy['field'] command. 
+    configure.pol file.  Each of the configuration values are then accessed using the policy['field'] command.
     The fields are:  'rulenum','action','mac-src','mac-dst','ip-src','ip-dst','ipprotocol','port-src','port-dst',
     'comment'.
 
@@ -35,21 +44,20 @@ def firewall_policy_processing(policies):
     for flow_mod and https://noxrepo.github.io/pox-doc/html/#match-structure for match.)  Also, do NOT wrap IP Addresses with
     IPAddr() unless you reformat the CIDR notation.  Look at the https://github.com/att/pox/blob/master/pox/lib/addresses.py
     for what POX is expecting as an IP Address.
-    '''
+    """
 
     rules = []
 
     for policy in policies:
         # Enter your code here to implement matching and block/allow rules.  See the links
-        # in Implementation Hints on how to do this. 
+        # in Implementation Hints on how to do this.
         # HINT:  Think about how to use the priority in your flow modification.
 
-        rule = None # Please note that you need to redefine this variable below to create a valid POX Flow Modification Object
-
+        rule = None  # Please note that you need to redefine this variable below to create a valid POX Flow Modification Object
 
         # End Code Here
-        print('Added Rule ',policy['rulenum'],': ',policy['comment'])
-        #print(rule)   #Uncomment this to debug your "rule"
+        print("Added Rule ", policy["rulenum"], ": ", policy["comment"])
+        # print(rule)   #Uncomment this to debug your "rule"
         rules.append(rule)
-    
+
     return rules
