@@ -53,7 +53,9 @@ def firewall_policy_processing(policies):
         # in Implementation Hints on how to do this.
         # HINT:  Think about how to use the priority in your flow modification.
 
-        rule = None  # Please note that you need to redefine this variable below to create a valid POX Flow Modification Object
+        rule = (
+            of.ofp_flow_mod()
+        )  # Please note that you need to redefine this variable below to create a valid POX Flow Modification Object
 
         # End Code Here
         print("Added Rule ", policy["rulenum"], ": ", policy["comment"])
