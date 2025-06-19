@@ -22,6 +22,46 @@ from pox.lib.addresses import IPAddr, EthAddr
 """
 
 
+class Policy:
+    def __init__(self, policy_dict: dict):
+        """
+        - policy["mac-src"] = Source MAC Address (00:00:00:00:00:00) or “-“
+        - policy["mac-dst"] = Destination MAC Address (00:00:00:00:00:00) ) or “-“
+        - policy["ip-src"] = Source IP Address (10.0.1.1/32) in CIDR notation ) or “-“
+        - policy["ip-dst"] = Destination IP Address (10.0.1.1/32) ) or “-“
+        - policy["ipprotocol"] = IP Protocol (6 for TCP) ) or “-“
+        - policy["port-src"] = Source Port for TCP/UDP (12000) ) or “-“
+        - policy["port-dst"] = Destination Port for TCP/UDP (80) ) or “-“
+        - policy["rulenum"] = Rule Number (1)
+        - policy["comment"] = Comment (Example Rule)
+        - policy["action"] = Allow or Block
+        """
+        self.rulenum = policy_dict["rulenum"]
+        self.action = policy_dict["action"]
+        self.mac_src = (
+            EthAddr(policy_dict["mac-src"]) if policy_dict["mac-src"] != "-" else None
+        )
+        self.mac_dst = (
+            EthAddr(policy_dict["mac-dst"]) if policy_dict["mac-dst"] != "-" else None
+        )
+        self.ip_src = (
+            IPAddr(policy_dict["ip-src"]) if policy_dict["ip-src"] != "-" else None
+        )
+        self.ip_dst = (
+            IPAddr(policy_dict["ip-dst"]) if policy_dict["ip-dst"] != "-" else None
+        )
+        self.ip_protocol = (
+            int(policy_dict["ipprotocol"]) if policy_dict["ipprotocol"] != "-" else None
+        )
+        self.port_src = (
+            int(policy_dict["port-src"]) if policy_dict["port-src"] != "-" else None
+        )
+        self.port_dst = (
+            int(policy_dict["port-dst"]) if policy_dict["port-dst"] != "-" else None
+        )
+        self.comment = policy_dict["comment"]
+
+
 def firewall_policy_processing(policies):
     """
     This is where you are to implement your code that will build POX/Openflow Match and Action operations to
@@ -46,16 +86,17 @@ def firewall_policy_processing(policies):
     for what POX is expecting as an IP Address.
     """
 
+    policies = [Policy(policy) for policy in policies]
     rules = []
-
     for policy in policies:
         # Enter your code here to implement matching and block/allow rules.  See the links
         # in Implementation Hints on how to do this.
         # HINT:  Think about how to use the priority in your flow modification.
 
-        rule = (
-            of.ofp_flow_mod()
-        )  # Please note that you need to redefine this variable below to create a valid POX Flow Modification Object
+        # Please note that you need to redefine this variable below to create a valid POX Flow Modification Object
+        rule = of.ofp_flow_mod()
+
+        print(policy)
 
         # End Code Here
         print("Added Rule ", policy["rulenum"], ": ", policy["comment"])
