@@ -47,6 +47,11 @@ class Policy:
         self.port_dst = policy_dict["port-dst"]
         self.comment = policy_dict["comment"]
 
+    def make_rule(self) -> of.ofp_flow_mod:
+        rule = of.ofp_flow_mod()
+        # hardcode as ipv4
+        rule.match.dl_type = pkt.ethernet.IP_TYPE
+
 
 def firewall_policy_processing(policies):
     """
@@ -80,9 +85,7 @@ def firewall_policy_processing(policies):
         # HINT:  Think about how to use the priority in your flow modification.
 
         # Please note that you need to redefine this variable below to create a valid POX Flow Modification Object
-        rule = of.ofp_flow_mod()
-
-        print(policy)
+        rule = policy.make_rule()
 
         # End Code Here
         print("Added Rule ", policy.rulenum, ": ", policy.comment)
