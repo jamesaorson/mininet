@@ -72,12 +72,26 @@ class Policy:
         self.mac_dst = (
             EthAddr(policy_dict["mac-dst"]) if policy_dict["mac-dst"] != "-" else None
         )
-        self.ip_src = (
-            IPAddr(policy_dict["ip-src"]) if policy_dict["ip-src"] != "-" else None
-        )
-        self.ip_dst = (
-            IPAddr(policy_dict["ip-dst"]) if policy_dict["ip-dst"] != "-" else None
-        )
+        try:
+            self.ip_src = (
+                IPAddr(policy_dict["ip-src"]) if policy_dict["ip-src"] != "-" else None
+            )
+        except Exception as e:
+            print(
+                f"Error parsing IP source address: {policy_dict['ip-src']}, Error: {e}"
+            )
+            import sys
+
+            sys.exit(1)
+        try:
+            self.ip_dst = (
+                IPAddr(policy_dict["ip-dst"]) if policy_dict["ip-dst"] != "-" else None
+            )
+        except Exception as e:
+            print(f"Error parsing IP dest address: {policy_dict['ip-dst']}, Error: {e}")
+            import sys
+
+            sys.exit(1)
         self.ip_protocol = (
             int(policy_dict["ipprotocol"]) if policy_dict["ipprotocol"] != "-" else None
         )
