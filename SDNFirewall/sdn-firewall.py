@@ -38,27 +38,13 @@ class Policy:
         """
         self.rulenum = policy_dict["rulenum"]
         self.action = policy_dict["action"]
-        self.mac_src = (
-            EthAddr(policy_dict["mac-src"]) if policy_dict["mac-src"] != "-" else None
-        )
-        self.mac_dst = (
-            EthAddr(policy_dict["mac-dst"]) if policy_dict["mac-dst"] != "-" else None
-        )
-        self.ip_src = (
-            IPAddr(policy_dict["ip-src"]) if policy_dict["ip-src"] != "-" else None
-        )
-        self.ip_dst = (
-            IPAddr(policy_dict["ip-dst"]) if policy_dict["ip-dst"] != "-" else None
-        )
-        self.ip_protocol = (
-            int(policy_dict["ipprotocol"]) if policy_dict["ipprotocol"] != "-" else None
-        )
-        self.port_src = (
-            int(policy_dict["port-src"]) if policy_dict["port-src"] != "-" else None
-        )
-        self.port_dst = (
-            int(policy_dict["port-dst"]) if policy_dict["port-dst"] != "-" else None
-        )
+        self.mac_src = policy_dict["mac-src"]
+        self.mac_dst = policy_dict["mac-dst"]
+        self.ip_src = policy_dict["ip-src"]
+        self.ip_dst = policy_dict["ip-dst"]
+        self.ip_protocol = policy_dict["ipprotocol"]
+        self.port_src = policy_dict["port-src"]
+        self.port_dst = policy_dict["port-dst"]
         self.comment = policy_dict["comment"]
 
 
