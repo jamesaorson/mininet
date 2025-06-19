@@ -21,6 +21,13 @@ from pox.lib.addresses import IPAddr, EthAddr
 3. Create a POX Output Action, if needed, to specify what to do with the traffic.
 """
 
+"""
+TODO: Failed testcase from alt:
+Passed 45 / 46
+failed testcases:
+15: h43 -> h8 with T at 231, should be True, current False
+"""
+
 
 class Policy:
     PRIORITY_BLOCK = 0
