@@ -1,3 +1,8 @@
 {
-    "python.autoComplete.extraPaths": [ "/home/mininet/pox/" ],
+    "python.autoComplete.extraPaths": [
+        "${workspaceFolder}/pox",
+    ],
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}/pox"
+    ]
 }
