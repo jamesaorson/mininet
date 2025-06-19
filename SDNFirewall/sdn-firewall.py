@@ -23,6 +23,9 @@ from pox.lib.addresses import IPAddr, EthAddr
 
 
 class Policy:
+    PRIORITY_BLOCK = 0
+    PRIORITY_ALLOW = 10001
+
     def __init__(self, policy_dict: dict):
         """
         - policy["mac-src"] = Source MAC Address (00:00:00:00:00:00) or “-“
@@ -51,6 +54,11 @@ class Policy:
         rule = of.ofp_flow_mod()
         # hardcode as ipv4
         rule.match.dl_type = pkt.ethernet.IP_TYPE
+        rule.priority = (
+            self.PRIORITY_ALLOW
+            if self.action.lower() == "allow"
+            else self.PRIORITY_BLOCK
+        )
 
 
 def firewall_policy_processing(policies):
