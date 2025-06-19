@@ -74,7 +74,9 @@ class Policy:
         )
         try:
             self.ip_src = (
-                IPAddr(policy_dict["ip-src"]) if policy_dict["ip-src"] != "-" else None
+                IPAddr(policy_dict["ip-src"].split("/")[0])
+                if policy_dict["ip-src"] != "-"
+                else None
             )
         except Exception as e:
             print(
@@ -85,7 +87,9 @@ class Policy:
             sys.exit(1)
         try:
             self.ip_dst = (
-                IPAddr(policy_dict["ip-dst"]) if policy_dict["ip-dst"] != "-" else None
+                IPAddr(policy_dict["ip-dst"].split("/")[0])
+                if policy_dict["ip-dst"] != "-"
+                else None
             )
         except Exception as e:
             print(f"Error parsing IP dest address: {policy_dict['ip-dst']}, Error: {e}")
