@@ -47,11 +47,11 @@
 # override aspects of Task 1 or Task 2 above.
 # (six rules typically)
 4,Block,-,-,-,-,1,-,-,Block all pings everywhere
-5,Allow,-,-,10.0.1.0/24,-,1,-,-,Allow us* to ping hq*
-6,Allow,-,-,10.0.20.0/24,-,1,-,-,Allow in* to ping hq*
-7,Allow,-,-,10.0.40.0/24,-,1,-,-,Allow uk* to ping hq*
-8,Allow,-,-,10.0.200.1/32,-,1,-,-,Allow other1 to ping hq*
-9,Allow,-,-,10.0.19.1/32,-,1,-,-,Allow other2 to ping hq*
+5,Allow,-,-,10.0.1.0/24,10.0.0.0/24,1,-,-,Allow us* to ping hq*
+6,Allow,-,-,10.0.20.0/24,10.0.0.0/24,1,-,-,Allow in* to ping hq*
+7,Allow,-,-,10.0.40.0/24,10.0.0.0/24,1,-,-,Allow uk* to ping hq*
+8,Allow,-,-,10.0.200.1/32,10.0.0.0/24,1,-,-,Allow other1 to ping hq*
+9,Allow,-,-,10.0.19.1/32,10.0.0.0/24,1,-,-,Allow other2 to ping hq*
 # 4,Block,00:00:00:55:aa:2d,-,-,10.0.1.0/24,1,-,-,Block ping from other1 to us*
 # 5,Block,00:00:00:56:ac:4d,-,-,10.0.1.0/24,1,-,-,Block ping from other2 to us*
 # 6,Block,00:00:00:55:aa:2d,-,-,10.0.20.0/24,1,-,-,Block ping from other1 to in*
