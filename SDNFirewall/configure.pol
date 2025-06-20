@@ -46,12 +46,9 @@
 # The China network is exempted from this rule because any overrides that you may do here will
 # override aspects of Task 1 or Task 2 above.
 # (six rules typically)
-# 4,Allow,-,-,10.0.1.0/24,10.0.0.0/24,1,-,-,Allow us* subnet to ICMP ping hq*
-# 5,Allow,-,-,10.0.20.0/24,10.0.0.0/24,1,-,-,Allow in* subnet to ICMP ping hq*
-# 6,Allow,-,-,10.0.40.0/24,10.0.0.0/24,1,-,-,Allow uk* subnet to ICMP ping hq*
-7,Allow,-,-,10.0.0.0/24,10.0.1.0/24,1,-,-,Allow hq* to ICMP ping us*
-8,Allow,-,-,10.0.0.0/24,10.0.20.0/24,1,-,-,Allow hq* to ICMP ping in*
-9,Allow,-,-,10.0.0.0/24,10.0.40.0/24,1,-,-,Allow hq* to ICMP ping uk*
+# 7,Allow,-,-,10.0.0.0/24,10.0.1.0/24,1,-,-,Allow hq* to ICMP ping us*
+# 8,Allow,-,-,10.0.0.0/24,10.0.20.0/24,1,-,-,Allow hq* to ICMP ping in*
+# 9,Allow,-,-,10.0.0.0/24,10.0.40.0/24,1,-,-,Allow hq* to ICMP ping uk*
 
 # Task 4: Do not allow any response back from a TCP web server (http and https) from host cn3 to any
 # other host on the internet (world).
