@@ -30,13 +30,13 @@
 # Task 1: Host cn4 has a TCP-based worm virus. Block cn4 from initiating network communications to
 # any host on the internet (world) over the TCP Internet Protocol. You need not block ICMP or UDP.
 # (one rule max)
-# 1,Block,-,-,10.0.30.4/32,-,6,-,-,Block all TCP from cn4
+1,Block,-,-,10.0.30.4/32,-,6,-,-,Block all TCP from cn4
 
 # Task 2: Host cn5 has had a security incident and needs to be completely isolated from the network so
 # it has no connectivity (incoming or outgoing) to any other host on the internet (world).
 # (two rules max)
-# 2,Block,-,-,-,10.0.30.5/32,-,-,-,Block all traffic to cn5
-# 3,Block,-,-,10.0.30.5/32,-,-,-,-,Block all traffic from cn5
+2,Block,-,-,-,10.0.30.5/32,-,-,-,Block all traffic to cn5
+3,Block,-,-,10.0.30.5/32,-,-,-,-,Block all traffic from cn5
 
 # Task 3: Allow the hosts on the Headquarters network to be reachable via an ICMP ping from the
 # world (including all but the China subnet (to avoid conflicts with Tasks 1 and 2 above). In addition, the
