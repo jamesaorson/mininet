@@ -59,18 +59,6 @@ class Policy:
     OFPP_CONTROLLER = 65533
 
     def __init__(self, policy_dict: dict):
-        """
-        - policy["mac-src"] = Source MAC Address (00:00:00:00:00:00) or “-“
-        - policy["mac-dst"] = Destination MAC Address (00:00:00:00:00:00) ) or “-“
-        - policy["ip-src"] = Source IP Address (10.0.1.1/32) in CIDR notation ) or “-“
-        - policy["ip-dst"] = Destination IP Address (10.0.1.1/32) ) or “-“
-        - policy["ipprotocol"] = IP Protocol (6 for TCP) ) or “-“
-        - policy["port-src"] = Source Port for TCP/UDP (12000) ) or “-“
-        - policy["port-dst"] = Destination Port for TCP/UDP (80) ) or “-“
-        - policy["rulenum"] = Rule Number (1)
-        - policy["comment"] = Comment (Example Rule)
-        - policy["action"] = Allow or Block
-        """
         self.rulenum = policy_dict["rulenum"]
         self.action = policy_dict["action"]
         self.mac_src = (
@@ -92,28 +80,6 @@ class Policy:
         )
         self.comment = policy_dict["comment"]
 
-    def _make_match(self) -> of.ofp_match:
-        matchobj = of.ofp_match()
-        # Set Ethernet type to IPv4
-        matchobj.dl_type = pkt.ethernet.IP_TYPE
-
-        if self.mac_src is not None:
-            matchobj.dl_src = self.mac_src
-        if self.mac_dst is not None:
-            matchobj.dl_dst = self.mac_dst
-        if self.ip_src is not None:
-            matchobj.nw_src = self.ip_src
-        if self.ip_dst is not None:
-            matchobj.nw_dst = self.ip_dst
-        if self.port_src is not None:
-            matchobj.tp_src = self.port_src
-        if self.port_dst is not None:
-            matchobj.tp_dst = self.port_dst
-        if self.ip_protocol is not None:
-            matchobj.nw_proto = self.ip_protocol
-
-        return matchobj
-
     def make_rule(self) -> of.ofp_flow_mod:
         rule = of.ofp_flow_mod()
         rule.priority = (
@@ -121,7 +87,16 @@ class Policy:
             if self.action.lower() == "allow"
             else self.PRIORITY_BLOCK
         )
-        rule.match = self._make_match()
+        rule.match = of.ofp_match(
+            dl_type=pkt.ethernet.IP_TYPE,
+            dl_src=self.mac_src,
+            dl_dst=self.mac_dst,
+            nw_src=self.ip_src,
+            nw_dst=self.ip_dst,
+            tp_src=self.port_src,
+            tp_dst=self.port_dst,
+            nw_proto=self.ip_protocol,
+        )
         # If blocking, we do not need to add an action
         if self.action.lower() == "block":
             return rule
