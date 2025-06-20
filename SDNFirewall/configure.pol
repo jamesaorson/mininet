@@ -46,18 +46,12 @@
 # The China network is exempted from this rule because any overrides that you may do here will
 # override aspects of Task 1 or Task 2 above.
 # (six rules typically)
-4,Allow,-,-,-,10.0.0.0/24,1,-,-,Allow ping from everywhere to hq*
-5,Block,-,-,10.0.30.0/24,10.0.0.0/24,1,-,-,Block ping from cn* to hq*
-6,Block,-,-,-,10.0.1.0/24,1,-,-,Block all pings to us*
-7,Block,-,-,-,10.0.20.0/24,1,-,-,Block all pings to in*
-8,Block,-,-,-,10.0.40.0/24,1,-,-,Block all pings to uk*
-9,Allow,-,-,10.0.0.0/24,-,1,-,-,Allow pings from hq* to world
-# 4,Block,00:00:00:55:aa:2d,-,-,10.0.1.0/24,1,-,-,Block ping from other1 to us*
-# 5,Block,00:00:00:56:ac:4d,-,-,10.0.1.0/24,1,-,-,Block ping from other2 to us*
-# 6,Block,00:00:00:55:aa:2d,-,-,10.0.20.0/24,1,-,-,Block ping from other1 to in*
-# 7,Block,00:00:00:56:ac:4d,-,-,10.0.20.0/24,1,-,-,Block ping from other2 to in*
-# 8,Block,00:00:00:55:aa:2d,-,-,10.0.40.0/24,1,-,-,Block ping from other1 to uk*
-# 9,Block,00:00:00:56:ac:4d,-,-,10.0.40.0/24,1,-,-,Block ping from other2 to uk*
+4,Allow,-,-,-,10.0.0.0/24,1,-,-,Allow pings from everywhere to hq*
+5,Allow,-,-,10.0.0.0/24,-,1,-,-,Allow pings from hq* to everywhere
+6,Block,-,-,10.0.30.0/24,10.0.0.0/24,1,-,-,Block pings from cn* to hq*
+7,Block,-,-,-,10.0.1.0/24,1,-,-,Block all pings to us*
+8,Block,-,-,-,10.0.20.0/24,1,-,-,Block all pings to in*
+9,Block,-,-,-,10.0.40.0/24,1,-,-,Block all pings to uk*
 
 # Task 4: Do not allow any response back from a TCP web server (http and https) from host cn3 to any
 # other host on the internet (world).
