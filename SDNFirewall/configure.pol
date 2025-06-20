@@ -46,7 +46,7 @@
 # The China network is exempted from this rule because any overrides that you may do here will
 # override aspects of Task 1 or Task 2 above.
 # (six rules typically)
-4,Block,-,-,-,-,1,-,-,Block all pings everywhere
+# 4,Block,-,-,-,-,1,-,-,Block all pings everywhere
 5,Allow,-,-,10.0.1.0/24,10.0.0.0/24,1,-,-,Allow us* to ping hq*
 6,Allow,-,-,10.0.20.0/24,10.0.0.0/24,1,-,-,Allow in* to ping hq*
 7,Allow,-,-,10.0.40.0/24,10.0.0.0/24,1,-,-,Allow uk* to ping hq*
