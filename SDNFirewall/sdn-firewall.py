@@ -153,9 +153,8 @@ def firewall_policy_processing(policies):
     for what POX is expecting as an IP Address.
     """
 
-    policies = [Policy(policy) for policy in policies]
     rules = []
-    for policy in policies:
+    for policy in [Policy(policy) for policy in policies]:
         # Enter your code here to implement matching and block/allow rules.  See the links
         # in Implementation Hints on how to do this.
         # HINT:  Think about how to use the priority in your flow modification.
