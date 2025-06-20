@@ -75,7 +75,7 @@
 # Note that when testing this rule, the IP address for host us1 may differ from the published topology.
 # In this case, you want to address the particular hardware device.
 # (one rule max)
-16,Block,00:00:00:55:aa:2d,-,-,-,17,-,-,Block rogue UDP
+16,Block,00:00:00:56:ac:4d,-,-,-,17,-,-,Block rogue UDP
 
 # Task 7: Block the internet (world) from accessing TCP Port 25 on any corporate subnets. The behavior
 # of access to TCP Port 25 amongst members of the corporate subnets is undefined and you may handle
