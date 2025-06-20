@@ -81,4 +81,8 @@
 # of access to TCP Port 25 amongst members of the corporate subnets is undefined and you may handle
 # it as you wish.
 # (five rules max)
-17,Block,-,-,-,-,6,-,25,Block all port 25 access
+17,Block,-,-,-,10.0.0.0/24,6,-,25,Block all port 25 access to hq*
+18,Block,-,-,-,10.0.1.0/24,6,-,25,Block all port 25 access to us*
+19,Block,-,-,-,10.0.20.0/24,6,-,25,Block all port 25 access to in*
+20,Block,-,-,-,10.0.30.0/24,6,-,25,Block all port 25 access to cn*
+21,Block,-,-,-,10.0.40.0/24,6,-,25,Block all port 25 access to uk*
