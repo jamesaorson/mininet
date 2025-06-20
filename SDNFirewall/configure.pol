@@ -46,6 +46,12 @@
 # The China network is exempted from this rule because any overrides that you may do here will
 # override aspects of Task 1 or Task 2 above.
 # (six rules typically)
+4,Block,00:00:00:55:aa:2d,-,-,10.0.1.0/24,1,-,-,Block ping from other1 to us*
+5,Block,00:00:00:56:ac:4d2d,-,-,10.0.1.0/24,1,-,-,Block ping from other2 to us*
+6,Block,00:00:00:55:aa:2d,-,-,10.0.20.0/24,1,-,-,Block ping from other1 to in*
+7,Block,00:00:00:56:ac:4d2d,-,-,10.0.20.0/24,1,-,-,Block ping from other2 to in*
+8,Block,00:00:00:55:aa:2d,-,-,10.0.40.0/24,1,-,-,Block ping from other1 to uk*
+9,Block,00:00:00:56:ac:4d2d,-,-,10.0.40.0/24,1,-,-,Block ping from other2 to uk*
 # 4,Allow,-,-,10.0.1.0/24,10.0.0.0/24,1,-,-,Allow us* subnet to ICMP ping hq*
 # 5,Allow,-,-,10.0.20.0/24,10.0.0.0/24,1,-,-,Allow in* subnet to ICMP ping hq*
 # 6,Allow,-,-,10.0.40.0/24,10.0.0.0/24,1,-,-,Allow uk* subnet to ICMP ping hq*
