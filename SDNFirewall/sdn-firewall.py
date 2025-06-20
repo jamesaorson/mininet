@@ -60,7 +60,7 @@ class Policy:
 
     def __init__(self, policy_dict: dict):
         self.rulenum = policy_dict["rulenum"]
-        self.action = policy_dict["action"]
+        self.action = policy_dict["action"].lower()
         self.mac_src = (
             EthAddr(policy_dict["mac-src"]) if policy_dict["mac-src"] != "-" else None
         )
@@ -98,7 +98,7 @@ class Policy:
             nw_proto=self.ip_protocol,
         )
         # If blocking, we do not need to add an action
-        if self.action.lower() == "block":
+        if self.action == "block":
             return rule
         rule.actions.append(of.ofp_action_output(port=self.OFPP_CONTROLLER))
         return rule
