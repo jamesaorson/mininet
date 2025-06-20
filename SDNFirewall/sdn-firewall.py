@@ -33,30 +33,8 @@ class Policy:
     PRIORITY_BLOCK = 0
     PRIORITY_ALLOW = 10001
 
-    """
-    - of.OFPP_IN_PORT - This action will send the port back to the sender (i.e., the port it came
-                        into the network on)
-    - of.OFPP_NORMAL - Process the packet and handle via a normal L2/L3 legacy switch
-                        configuration (i.e., send traffic to its destination without modification) -
-                        See https://study-ccna.com/layer-3-switch/ for information on how normal
-                        L2/L3 legacy switches work.
-    - of.OFPP_FLOOD - This action will cause the traffic to be sent out to all ports except the
-                        source (IN_PORT) and any ports that have flooding turned off. This is very
-                        chatty and can be used to do network based attacks (see UDP Amplifications).
-                        This should be avoided.
-    - of.OFPP_ALL - output all OpenFlow ports except the source (IN_PORT). This is the same as
-                    FLOOD but it includes ports that have had flood turned off.
-    - of.OFPP_CONTROLLER - This action sends the packet to the switch controller. What
-                            happens with the port depends on the state of the switch controller.
-                            Thus it may work, but also may not work, based on the current state
-                            of the switch.
-    """
-    # Found in libopenflow_01.py in the POX source code.
-    OFPP_IN_PORT = 65528
+    # Found in libopenflow_01.py in the POX source code
     OFPP_NORMAL = 65530
-    OFPP_FLOOD = 65531
-    OFPP_ALL = 65532
-    OFPP_CONTROLLER = 65533
 
     def __init__(self, policy_dict: dict):
         self.rulenum = policy_dict["rulenum"]
