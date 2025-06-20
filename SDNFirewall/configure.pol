@@ -65,6 +65,9 @@
 # the subset of hosts for each rule (it should NOT be broader than /28).
 # (four rules typically)
 12,Block,-,-,10.0.40.128/30,10.0.1.32/30,6,-,9520,Block financial server access for uk2-5
+13,Block,-,-,10.0.20.124/30,10.0.1.32/30,6,-,9520,Block financial server access for in4-5
+14,Block,-,-,10.0.1.125/32,10.0.1.32/30,6,-,9520,Block financial server access for us5
+15,Block,-,-,10.0.0.220/32,10.0.1.32/30,6,-,9520,Block financial server access for hq5
 
 # Task 6: A rogue Raspberry Pi has been found on the network that has cloned the Network Address of
 # host us1. Block this device from accessing any other hosts on the internet (world) on the UDP Internet
