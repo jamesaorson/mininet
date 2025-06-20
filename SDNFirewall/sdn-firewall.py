@@ -100,7 +100,7 @@ class Policy:
         # If blocking, we do not need to add an action
         if self.action == "block":
             return rule
-        rule.actions.append(of.ofp_action_output(port=self.OFPP_CONTROLLER))
+        rule.actions.append(of.ofp_action_output(port=self.OFPP_NORMAL))
         return rule
 
 
