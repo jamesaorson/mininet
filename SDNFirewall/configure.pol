@@ -50,8 +50,8 @@
 # Task 4: Do not allow any response back from a TCP web server (http and https) from host cn3 to any
 # other host on the internet (world).
 # (two rules max)
-10,Block,-,-,10.0.30.3/32,-,6,-,80,Block HTTP traffic from cn3
-11,Block,-,-,10.0.30.3/32,-,6,-,443,Block HTTPS traffic from cn3
+10,Block,-,-,10.0.30.3/32,-,6,80,-,Block HTTP traffic from cn3
+11,Block,-,-,10.0.30.3/32,-,6,443,-,Block HTTPS traffic from cn3
 
 # Task 5: (CIDR Notation Rule) The servers located on hosts us3 and us4 run a micro webservice on TCP
 # Port 9520 that processes financial information. Access to this service should be blocked from
