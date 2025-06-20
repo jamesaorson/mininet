@@ -129,7 +129,7 @@ def firewall_policy_processing(policies):
     """
 
     rules = []
-    for policy in [Policy(policy) for policy in policies]:
+    for policy in map(Policy, policies):
         # Enter your code here to implement matching and block/allow rules.  See the links
         # in Implementation Hints on how to do this.
         # HINT:  Think about how to use the priority in your flow modification.
