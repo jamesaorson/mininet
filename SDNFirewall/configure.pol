@@ -64,7 +64,7 @@
 # hosts uk2, uk3, uk4, uk5, in4, in5, us5, and hq5. Please use the minimal CIDR notation that will bracket
 # the subset of hosts for each rule (it should NOT be broader than /28).
 # (four rules typically)
-12,Block,-,-,10.0.40.128/30,10.0.1.32/30,6,0,9520,Block financial server access for uk2-5
+12,Block,-,-,10.0.40.128/30,10.0.1.32/30,6,-,9520,Block financial server access for uk2-5
 
 # Task 6: A rogue Raspberry Pi has been found on the network that has cloned the Network Address of
 # host us1. Block this device from accessing any other hosts on the internet (world) on the UDP Internet
