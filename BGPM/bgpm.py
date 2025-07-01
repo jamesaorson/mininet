@@ -90,61 +90,38 @@ def top_10_ases_by_prefix_growth(cache_files):
           corresponds to AS "777" as having the smallest percentage increase (of the top ten) and AS "6" having the
           highest percentage increase (of the top ten).
     """
-
     # the required return type is 'list' - you are welcome to define additional data structures, if needed
-    def sort_origins(origin_growths):
-        origin, growth = origin_growths
-        try:
-            return growth, int(origin)
-        except ValueError:
-            return growth, 0
-
-    origin_first_appearance = {}
-    origin_last_appearance = {}
-    origin_first_appearance_prefixes = {}
-    origin_last_appearance_prefixes = {}
+    top_10_ases_by_prefix_growth = []
+    as_prefixes = {}
 
     for ndx, fpath in enumerate(cache_files):
         stream = pybgpstream.BGPStream(data_interface="singlefile")
         stream.set_data_interface_option("singlefile", "rib-file", fpath)
 
         # implement your solution here
-        for elem in stream:
-            as_path = elem.fields["as-path"].split()
-            prefix = elem.fields["prefix"]
-
-            if not as_path:
-                continue
-            origin = as_path[-1]
-
-            if origin not in origin_first_appearance:
-
-                origin_first_appearance[origin] = ndx
-                origin_first_appearance_prefixes[origin] = set([prefix])
-            # operating on the first snapshot origin appears in
-            elif origin_first_appearance[origin] == ndx:
-                origin_first_appearance_prefixes[origin].add(prefix)
-
-            # origin appears in a later snapshot
-            elif (
-                origin not in origin_last_appearance
-                or ndx != origin_last_appearance[origin]
-            ):
-                origin_last_appearance[origin] = ndx
-                origin_last_appearance_prefixes[origin] = set([prefix])
-            else:
-                origin_last_appearance_prefixes[origin].add(prefix)
-
-    origin_differences_growth = {}
-    for origin, last_prefixes in origin_last_appearance_prefixes.items():
-        num_last_prefixes = len(last_prefixes)
-        num_first_prefixes = len(origin_first_appearance_prefixes[origin])
-        growth = (num_last_prefixes - num_first_prefixes) / num_first_prefixes * 100
-        origin_differences_growth[origin] = growth
-
-    sorted_growths = sorted(origin_differences_growth.items(), key=sort_origins)
-    top_10 = sorted_growths[-10:]
-    return [origin[0] for origin in top_10]
+        as_prefixes_per_file = {}
+        for record in stream.records():
+            while elem := record.get_next_elem():
+                as_path = elem.fields.get("as-path")
+                prefix = elem.fields.get("prefix")
+                if as_path and prefix:
+                    ases = as_path.split()
+                    for _as in ases:
+                        if _as not in as_prefixes_per_file:
+                            as_prefixes_per_file[_as] = set()
+                        as_prefixes_per_file[_as].add(prefix)
+        for _as, prefixes in as_prefixes_per_file.items():
+            if _as not in as_prefixes:
+                as_prefixes[_as] = []
+            as_prefixes[_as].append(len(prefixes))
+    percentage_growths = []
+    for _as, prefixes in as_prefixes.items():
+        smallest = prefixes[0]
+        largest = prefixes[-1]
+        percentage_growths.append((_as, (largest - smallest) / smallest))
+    percentage_growths.sort(key=lambda x: x[1], reverse=False)
+    top_10_ases_by_prefix_growth = [as_info[0] for as_info in percentage_growths[-10:]]
+    return top_10_ases_by_prefix_growth
 
 
 # Task 2: Routing Table Growth: AS-Path Length Evolution Over Time
