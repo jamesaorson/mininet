@@ -105,11 +105,10 @@ def top_10_ases_by_prefix_growth(cache_files):
                 as_path = elem.fields.get("as-path")
                 prefix = elem.fields.get("prefix")
                 if as_path and prefix:
-                    ases = as_path.split()
-                    for _as in ases:
-                        if _as not in as_prefixes_per_file:
-                            as_prefixes_per_file[_as] = set()
-                        as_prefixes_per_file[_as].add(prefix)
+                    origin = as_path.split()[-1]
+                    if origin not in as_prefixes_per_file:
+                        as_prefixes_per_file[origin] = set()
+                    as_prefixes_per_file[origin].add(prefix)
         for _as, prefixes in as_prefixes_per_file.items():
             if _as not in as_prefixes:
                 as_prefixes[_as] = []
