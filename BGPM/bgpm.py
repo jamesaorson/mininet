@@ -33,11 +33,10 @@ def unique_prefixes_by_snapshot(cache_files):
 
         # implement your solution here
         prefixes_seen = set()
-        for record in stream.records():
-            while elem := record.get_next_elem():
-                prefix = elem.fields.get("prefix")
-                if prefix:
-                    prefixes_seen.add(prefix)
+        for elem in stream:
+            prefix = elem.fields.get("prefix")
+            if prefix:
+                prefixes_seen.add(prefix)
         unique_prefixes_by_snapshot.append(len(prefixes_seen))
     return unique_prefixes_by_snapshot
 
@@ -63,12 +62,11 @@ def unique_ases_by_snapshot(cache_files):
 
         # implement your solution here
         ases_seen = set()
-        for record in stream.records():
-            while elem := record.get_next_elem():
-                as_path = elem.fields.get("as-path")
-                if as_path:
-                    ases = as_path.split()
-                    ases_seen.update(ases)
+        for elem in stream:
+            as_path = elem.fields.get("as-path")
+            if as_path:
+                ases = as_path.split()
+                ases_seen.update(ases)
         unique_ases_by_snapshot.append(len(ases_seen))
 
     return unique_ases_by_snapshot
@@ -100,15 +98,14 @@ def top_10_ases_by_prefix_growth(cache_files):
 
         # implement your solution here
         as_prefixes_per_file = {}
-        for record in stream.records():
-            while elem := record.get_next_elem():
-                as_path = elem.fields.get("as-path")
-                prefix = elem.fields.get("prefix")
-                if as_path and prefix:
-                    origin = as_path.split()[-1]
-                    if origin not in as_prefixes_per_file:
-                        as_prefixes_per_file[origin] = set()
-                    as_prefixes_per_file[origin].add(prefix)
+        for elem in stream:
+            as_path = elem.fields.get("as-path")
+            prefix = elem.fields.get("prefix")
+            if as_path and prefix:
+                origin = as_path.split()[-1]
+                if origin not in as_prefixes_per_file:
+                    as_prefixes_per_file[origin] = set()
+                as_prefixes_per_file[origin].add(prefix)
         for _as, prefixes in as_prefixes_per_file.items():
             if _as not in as_prefixes:
                 as_prefixes[_as] = []
@@ -157,28 +154,27 @@ def shortest_path_by_origin_by_snapshot(cache_files):
         stream.set_data_interface_option("singlefile", "rib-file", fpath)
 
         # implement your solution here
-        for record in stream.records():
-            while elem := record.get_next_elem():
-                as_path = elem.fields.get("as-path")
-                if as_path:
-                    split_as_path = as_path.split()
-                    origin = split_as_path[-1]
-                    path_length = len(set(split_as_path))
-                    if path_length == 1:
-                        continue
-                    if origin not in shortest_path_by_origin_by_snapshot:
-                        shortest_path_by_origin_by_snapshot[origin] = [0] * len(
-                            cache_files,
-                        )
-                    existing_length = shortest_path_by_origin_by_snapshot[origin][ndx]
-                    shortest_path_by_origin_by_snapshot[origin][ndx] = (
-                        path_length
-                        if existing_length == 0
-                        else min(
-                            existing_length,
-                            path_length,
-                        )
+        for elem in stream:
+            as_path = elem.fields.get("as-path")
+            if as_path:
+                split_as_path = as_path.split()
+                origin = split_as_path[-1]
+                path_length = len(set(split_as_path))
+                if path_length == 1:
+                    continue
+                if origin not in shortest_path_by_origin_by_snapshot:
+                    shortest_path_by_origin_by_snapshot[origin] = [0] * len(
+                        cache_files,
                     )
+                existing_length = shortest_path_by_origin_by_snapshot[origin][ndx]
+                shortest_path_by_origin_by_snapshot[origin][ndx] = (
+                    path_length
+                    if existing_length == 0
+                    else min(
+                        existing_length,
+                        path_length,
+                    )
+                )
     return shortest_path_by_origin_by_snapshot
 
 
