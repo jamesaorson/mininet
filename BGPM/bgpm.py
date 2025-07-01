@@ -181,6 +181,53 @@ def shortest_path_by_origin_by_snapshot(cache_files):
     return shortest_path_by_origin_by_snapshot
 
 
+def _calculate_event_durations(
+    elem: pybgpstream.BGPElem,
+    timestamps: dict[str, dict[str, float]],
+    event_durations: dict[str, dict[str, list[float]]],
+    do_blackholing: bool = False,
+):
+    event_type = elem.type
+    timestamp = elem.record.time
+    peer_ip = elem.peer_address
+    prefix = elem.fields.get("prefix")
+    if not prefix or not peer_ip:
+        return
+
+    match event_type:
+        case "A":
+            # Default to True when not blackholing
+            is_rtbh_event = (
+                any(
+                    "666" == community.split(":")[-1]
+                    for community in elem.fields.get("communities", [])
+                )
+                if do_blackholing
+                else True
+            )
+            if is_rtbh_event:
+                if peer_ip not in timestamps:
+                    timestamps[peer_ip] = {}
+                timestamps[peer_ip][prefix] = timestamp
+            else:
+                if peer_ip in timestamps and prefix in timestamps[peer_ip]:
+                    del timestamps[peer_ip][prefix]
+        case "W":
+            if peer_ip not in timestamps:
+                return
+            if prefix not in timestamps[peer_ip]:
+                return
+            duration = timestamp - timestamps[peer_ip][prefix]
+            if duration == 0.0:
+                return
+            if peer_ip not in event_durations:
+                event_durations[peer_ip] = {}
+            if prefix not in event_durations[peer_ip]:
+                event_durations[peer_ip][prefix] = []
+            event_durations[peer_ip][prefix].append(duration)
+            del timestamps[peer_ip][prefix]
+
+
 # Task 3: Announcement-Withdrawal Event Durations
 def aw_event_durations(cache_files):
     """
@@ -198,8 +245,8 @@ def aw_event_durations(cache_files):
         corresponds to the peerIP "127.0.0.1", the prefix "12.13.14.0/24" and event durations of 4.0, 1.0 and 3.0.
     """
     # the required return type is 'dict' - you are welcome to define additional data structures, if needed
-    aw_event_durations = {}
-    timestamps = {}
+    aw_event_durations: dict[str, dict[str, list[float]]] = {}
+    timestamps: dict[str, dict[str, float]] = {}
 
     for ndx, fpath in enumerate(cache_files):
         stream = pybgpstream.BGPStream(data_interface="singlefile")
@@ -207,31 +254,12 @@ def aw_event_durations(cache_files):
 
         # implement your solution here
         for elem in stream:
-            event_type = elem.type
-            timestamp = elem.record.time
-            peer_ip = elem.peer_address
-            prefix = elem.fields.get("prefix")
-            if not prefix or not peer_ip:
-                continue
-            match event_type:
-                case "A":
-                    if peer_ip not in timestamps:
-                        timestamps[peer_ip] = {}
-                    timestamps[peer_ip][prefix] = timestamp
-                case "W":
-                    if peer_ip not in timestamps:
-                        continue
-                    if prefix not in timestamps[peer_ip]:
-                        continue
-                    duration = timestamp - timestamps[peer_ip][prefix]
-                    if duration == 0.0:
-                        continue
-                    if peer_ip not in aw_event_durations:
-                        aw_event_durations[peer_ip] = {}
-                    if prefix not in aw_event_durations[peer_ip]:
-                        aw_event_durations[peer_ip][prefix] = []
-                    aw_event_durations[peer_ip][prefix].append(duration)
-                    del timestamps[peer_ip][prefix]
+            _calculate_event_durations(
+                elem,
+                timestamps,
+                aw_event_durations,
+                do_blackholing=False,
+            )
     return aw_event_durations
 
 
@@ -255,11 +283,18 @@ def rtbh_event_durations(cache_files):
     """
     # the required return type is 'dict' - you are welcome to define additional data structures, if needed
     rtbh_event_durations = {}
+    timestamps = {}
 
     for fpath in cache_files:
         stream = pybgpstream.BGPStream(data_interface="singlefile")
         stream.set_data_interface_option("singlefile", "upd-file", fpath)
 
         # implement your solution here
-
+        for elem in stream:
+            _calculate_event_durations(
+                elem,
+                timestamps,
+                rtbh_event_durations,
+                do_blackholing=True,
+            )
     return rtbh_event_durations
