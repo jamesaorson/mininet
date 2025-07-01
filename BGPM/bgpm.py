@@ -36,11 +36,9 @@ def unique_prefixes_by_snapshot(cache_files):
         records = stream.records()
         for record in records:
             while elem := record.get_next_elem():
-                fields = elem.fields
-                if "prefix" in fields:
-                    prefix = fields["prefix"]
-                    if prefix:
-                        prefixes_seen.add(prefix)
+                prefix = elem.fields.get("prefix")
+                if prefix:
+                    prefixes_seen.add(prefix)
         unique_prefixes_by_snapshot.append(len(prefixes_seen))
     return unique_prefixes_by_snapshot
 
@@ -65,6 +63,15 @@ def unique_ases_by_snapshot(cache_files):
         stream.set_data_interface_option("singlefile", "rib-file", fpath)
 
         # implement your solution here
+        ases_seen = set()
+        records = stream.records()
+        for record in records:
+            while elem := record.get_next_elem():
+                as_path = elem.fields.get("as-path")
+                if as_path:
+                    ases = as_path.split()
+                    ases_seen.update(ases)
+        unique_ases_by_snapshot.append(len(ases_seen))
 
     return unique_ases_by_snapshot
 
