@@ -90,8 +90,8 @@ if __name__ == "__main__":
             (TASK_1B, unique_ases_by_snapshot, "rib_files"),
             (TASK_1C, top_10_ases_by_prefix_growth, "rib_files"),
             (TASK_2, shortest_path_by_origin_by_snapshot, "rib_files"),
-            # (TASK_3, aw_event_durations, "update_files"),
-            # (TASK_4, rtbh_event_durations, "update_files_blackholing"),
+            (TASK_3, aw_event_durations, "update_files"),
+            (TASK_4, rtbh_event_durations, "update_files_blackholing"),
         ]
 
         collectors = [RRC04, RRC12]
