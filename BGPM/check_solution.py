@@ -129,6 +129,7 @@ if __name__ == "__main__":
                                 )
 
                         # check student solution against reference solution
+                        # NOTE: solution - https://github.com/howardwang15/cs6250/blob/master/BGPM/bgpm.py
                         solution = load_reference_solution(collector, task)
 
                         # there is a tie in the solution for Task 1C - it can be ignored, because the hidden data set has no tie
