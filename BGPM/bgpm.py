@@ -33,8 +33,7 @@ def unique_prefixes_by_snapshot(cache_files):
 
         # implement your solution here
         prefixes_seen = set()
-        records = stream.records()
-        for record in records:
+        for record in stream.records():
             while elem := record.get_next_elem():
                 prefix = elem.fields.get("prefix")
                 if prefix:
@@ -64,8 +63,7 @@ def unique_ases_by_snapshot(cache_files):
 
         # implement your solution here
         ases_seen = set()
-        records = stream.records()
-        for record in records:
+        for record in stream.records():
             while elem := record.get_next_elem():
                 as_path = elem.fields.get("as-path")
                 if as_path:
@@ -94,13 +92,35 @@ def top_10_ases_by_prefix_growth(cache_files):
     """
     # the required return type is 'list' - you are welcome to define additional data structures, if needed
     top_10_ases_by_prefix_growth = []
+    as_prefixes = {}
 
     for ndx, fpath in enumerate(cache_files):
         stream = pybgpstream.BGPStream(data_interface="singlefile")
         stream.set_data_interface_option("singlefile", "rib-file", fpath)
 
         # implement your solution here
-
+        as_prefixes_per_file = {}
+        for record in stream.records():
+            while elem := record.get_next_elem():
+                as_path = elem.fields.get("as-path")
+                prefix = elem.fields.get("prefix")
+                if as_path and prefix:
+                    ases = as_path.split()
+                    for _as in ases:
+                        if _as not in as_prefixes_per_file:
+                            as_prefixes_per_file[_as] = set()
+                        as_prefixes_per_file[_as].add(prefix)
+        for _as, prefixes in as_prefixes_per_file.items():
+            if _as not in as_prefixes:
+                as_prefixes[_as] = []
+            as_prefixes[_as].append(len(prefixes))
+    percentage_growths = []
+    for _as, prefixes in as_prefixes.items():
+        smallest = prefixes[0]
+        largest = prefixes[-1]
+        percentage_growths.append((_as, (largest - smallest) / smallest))
+    percentage_growths.sort(key=lambda x: x[1], reverse=False)
+    top_10_ases_by_prefix_growth = [as_info[0] for as_info in percentage_growths[-10:]]
     return top_10_ases_by_prefix_growth
 
 
