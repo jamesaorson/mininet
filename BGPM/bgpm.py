@@ -32,7 +32,16 @@ def unique_prefixes_by_snapshot(cache_files):
         stream.set_data_interface_option("singlefile", "rib-file", fpath)
 
         # implement your solution here
-
+        prefixes_seen = set()
+        records = stream.records()
+        for record in records:
+            while elem := record.get_next_elem():
+                fields = elem.fields
+                if "prefix" in fields:
+                    prefix = fields["prefix"]
+                    if prefix:
+                        prefixes_seen.add(prefix)
+        unique_prefixes_by_snapshot.append(len(prefixes_seen))
     return unique_prefixes_by_snapshot
 
 
