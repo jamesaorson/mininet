@@ -22,9 +22,13 @@ TASK_3 = "task_3"
 TASK_4 = "task_4"
 
 runtimes = {
-    "summary": {RRC04: 0, RRC12: 0}, 
-    "details": {RRC04: {TASK_1A: 0, TASK_1B: 0, TASK_1C: 0, TASK_2: 0, TASK_3: 0, TASK_4: 0}, RRC12: {TASK_1A: 0, TASK_1B: 0, TASK_1C: 0, TASK_2: 0, TASK_3: 0, TASK_4: 0}}
+    "summary": {RRC04: 0, RRC12: 0},
+    "details": {
+        RRC04: {TASK_1A: 0, TASK_1B: 0, TASK_1C: 0, TASK_2: 0, TASK_3: 0, TASK_4: 0},
+        RRC12: {TASK_1A: 0, TASK_1B: 0, TASK_1C: 0, TASK_2: 0, TASK_3: 0, TASK_4: 0},
+    },
 }
+
 
 # pickle files are a standard way of serializing data in Python
 # https://docs.python.org/3/library/pickle.html
@@ -38,7 +42,7 @@ def write_pickle(data, fpath):
 
 # Python also allows serialization of data to JSON, but you're not guaranteed to be able to capture all Python type
 # https://docs.python.org/3/library/pickle.html#comparison-with-json
-#def write_j(data, fpath, task):
+# def write_j(data, fpath, task):
 def write_json(data, fpath, sort_keys=False, indent=4):
     try:
         with open(Path(fpath), "w") as f:
@@ -75,14 +79,15 @@ if __name__ == "__main__":
             from bgpm import shortest_path_by_origin_by_snapshot
             from bgpm import aw_event_durations
             from bgpm import rtbh_event_durations
+
             msg = colored("All functions imported", attrs=["bold"])
             print(f"{inf_bullet} {msg}")
         except (ImportError, Exception) as e:
             print(f"{err_bullet} {repr(e)}")
 
         tasks = [
-            (TASK_1A, unique_prefixes_by_snapshot, "rib_files"),
-            (TASK_1B, unique_ases_by_snapshot, "rib_files"),
+            # (TASK_1A, unique_prefixes_by_snapshot, "rib_files"),
+            # (TASK_1B, unique_ases_by_snapshot, "rib_files"),
             (TASK_1C, top_10_ases_by_prefix_growth, "rib_files"),
             (TASK_2, shortest_path_by_origin_by_snapshot, "rib_files"),
             (TASK_3, aw_event_durations, "update_files"),
@@ -104,7 +109,7 @@ if __name__ == "__main__":
                     begin = time.perf_counter()
                     res = func(get_cache_files(collector, arg))
                     end = time.perf_counter()
-                    runtimes["details"][collector][task] = (end - begin)
+                    runtimes["details"][collector][task] = end - begin
                     if not res:
                         # res is empty, so nothing needs to be cached to disk - student skipped this task
                         print(f"{err_prologue} nothing returned for this task")
@@ -113,11 +118,15 @@ if __name__ == "__main__":
                         # check signature of result
                         if task in [TASK_1A, TASK_1B, TASK_1C]:
                             if type(res) is not type([]):
-                                print(f"{err_prologue} your function should return a '{type([])}', not a '{type(res)}'")
-    
+                                print(
+                                    f"{err_prologue} your function should return a '{type([])}', not a '{type(res)}'"
+                                )
+
                         if task in [TASK_2, TASK_3, TASK_4]:
                             if type(res) is not type({}):
-                                print(f"{err_prologue} your function should return a '{type({})}', not a '{type(res)}'")
+                                print(
+                                    f"{err_prologue} your function should return a '{type({})}', not a '{type(res)}'"
+                                )
 
                         # check student solution against reference solution
                         solution = load_reference_solution(collector, task)
@@ -136,12 +145,20 @@ if __name__ == "__main__":
                             #     #                                    ^^^^^^^^^^^^^^^^^
                             # }
 
-                            v33330, v132061 = ['33330', '132061']
+                            v33330, v132061 = ["33330", "132061"]
                             if all(origin in res for origin in [v33330, v132061]):
-                                ndx33330, ndx132061 = res.index(v33330), res.index(v132061)
-                                if abs(ndx33330 - ndx132061) == 1 and ndx33330 > ndx132061:
-                                    res[ndx33330], res[ndx132061] = res[ndx132061], res[ndx33330]
-                            
+                                ndx33330, ndx132061 = res.index(v33330), res.index(
+                                    v132061
+                                )
+                                if (
+                                    abs(ndx33330 - ndx132061) == 1
+                                    and ndx33330 > ndx132061
+                                ):
+                                    res[ndx33330], res[ndx132061] = (
+                                        res[ndx132061],
+                                        res[ndx33330],
+                                    )
+
                         if solution == res:
                             print(f"{inf_prologue} returned value is correct")
                         else:
@@ -150,7 +167,9 @@ if __name__ == "__main__":
                             output_directory = Path(Path(collector), "student_solution")
                             output_json = Path(output_directory, f"{task}.json")
                             write_json(res, output_json, sort_keys=json_sort_keys)
-                            print(f"{err_prologue} returned value is incorrect - your output is saved in {output_json}")
+                            print(
+                                f"{err_prologue} returned value is incorrect - your output is saved in {output_json}"
+                            )
                             # if you want to create a pickle file (https://docs.python.org/3/library/pickle.html), uncomment the next line
                             # output_pickle = Path(output_directory, f"{task}.p")
                             # write_pickle(res, output_pickle)
@@ -161,7 +180,9 @@ if __name__ == "__main__":
 
         # record timing summaries
         for collector in collectors:
-            runtimes["summary"][collector] = sum(runtimes["details"][collector].values())
+            runtimes["summary"][collector] = sum(
+                runtimes["details"][collector].values()
+            )
 
         # uncomment the next line if you want to record your runtime results to a file
         # write_json(runtimes, "runtimes.json")
