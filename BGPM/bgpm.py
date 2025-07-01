@@ -64,9 +64,10 @@ def unique_ases_by_snapshot(cache_files):
         ases_seen = set()
         for elem in stream:
             as_path = elem.fields.get("as-path")
-            if as_path:
-                ases = as_path.split()
-                ases_seen.update(ases)
+            if not as_path:
+                continue
+            ases = as_path.split()
+            ases_seen.update(ases)
         unique_ases_by_snapshot.append(len(ases_seen))
 
     return unique_ases_by_snapshot
@@ -101,11 +102,12 @@ def top_10_ases_by_prefix_growth(cache_files):
         for elem in stream:
             as_path = elem.fields.get("as-path")
             prefix = elem.fields.get("prefix")
-            if as_path and prefix:
-                origin = as_path.split()[-1]
-                if origin not in as_prefixes_per_file:
-                    as_prefixes_per_file[origin] = set()
-                as_prefixes_per_file[origin].add(prefix)
+            if not as_path or not prefix:
+                continue
+            origin = as_path.split()[-1]
+            if origin not in as_prefixes_per_file:
+                as_prefixes_per_file[origin] = set()
+            as_prefixes_per_file[origin].add(prefix)
         for _as, prefixes in as_prefixes_per_file.items():
             if _as not in as_prefixes:
                 as_prefixes[_as] = []
@@ -156,25 +158,26 @@ def shortest_path_by_origin_by_snapshot(cache_files):
         # implement your solution here
         for elem in stream:
             as_path = elem.fields.get("as-path")
-            if as_path:
-                split_as_path = as_path.split()
-                origin = split_as_path[-1]
-                path_length = len(set(split_as_path))
-                if path_length == 1:
-                    continue
-                if origin not in shortest_path_by_origin_by_snapshot:
-                    shortest_path_by_origin_by_snapshot[origin] = [0] * len(
-                        cache_files,
-                    )
-                existing_length = shortest_path_by_origin_by_snapshot[origin][ndx]
-                shortest_path_by_origin_by_snapshot[origin][ndx] = (
-                    path_length
-                    if existing_length == 0
-                    else min(
-                        existing_length,
-                        path_length,
-                    )
+            if not as_path:
+                continue
+            split_as_path = as_path.split()
+            origin = split_as_path[-1]
+            path_length = len(set(split_as_path))
+            if path_length == 1:
+                continue
+            if origin not in shortest_path_by_origin_by_snapshot:
+                shortest_path_by_origin_by_snapshot[origin] = [0] * len(
+                    cache_files,
                 )
+            existing_length = shortest_path_by_origin_by_snapshot[origin][ndx]
+            shortest_path_by_origin_by_snapshot[origin][ndx] = (
+                path_length
+                if existing_length == 0
+                else min(
+                    existing_length,
+                    path_length,
+                )
+            )
     return shortest_path_by_origin_by_snapshot
 
 
@@ -196,13 +199,39 @@ def aw_event_durations(cache_files):
     """
     # the required return type is 'dict' - you are welcome to define additional data structures, if needed
     aw_event_durations = {}
+    timestamps = {}
 
     for ndx, fpath in enumerate(cache_files):
         stream = pybgpstream.BGPStream(data_interface="singlefile")
         stream.set_data_interface_option("singlefile", "upd-file", fpath)
 
         # implement your solution here
-
+        for elem in stream:
+            event_type = elem.type
+            timestamp = elem.record.time
+            peer_ip = elem.peer_address
+            prefix = elem.fields.get("prefix")
+            if not prefix or not peer_ip:
+                continue
+            match event_type:
+                case "A":
+                    if peer_ip not in timestamps:
+                        timestamps[peer_ip] = {}
+                    timestamps[peer_ip][prefix] = timestamp
+                case "W":
+                    if peer_ip not in timestamps:
+                        continue
+                    if prefix not in timestamps[peer_ip]:
+                        continue
+                    duration = timestamp - timestamps[peer_ip][prefix]
+                    if duration == 0.0:
+                        continue
+                    if peer_ip not in aw_event_durations:
+                        aw_event_durations[peer_ip] = {}
+                    if prefix not in aw_event_durations[peer_ip]:
+                        aw_event_durations[peer_ip][prefix] = []
+                    aw_event_durations[peer_ip][prefix].append(duration)
+                    del timestamps[peer_ip][prefix]
     return aw_event_durations
 
 
