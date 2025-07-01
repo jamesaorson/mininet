@@ -157,7 +157,28 @@ def shortest_path_by_origin_by_snapshot(cache_files):
         stream.set_data_interface_option("singlefile", "rib-file", fpath)
 
         # implement your solution here
-
+        for record in stream.records():
+            while elem := record.get_next_elem():
+                as_path = elem.fields.get("as-path")
+                if as_path:
+                    split_as_path = as_path.split()
+                    origin = split_as_path[-1]
+                    path_length = len(set(split_as_path))
+                    if path_length == 1:
+                        continue
+                    if origin not in shortest_path_by_origin_by_snapshot:
+                        shortest_path_by_origin_by_snapshot[origin] = [0] * len(
+                            cache_files,
+                        )
+                    existing_length = shortest_path_by_origin_by_snapshot[origin][ndx]
+                    shortest_path_by_origin_by_snapshot[origin][ndx] = (
+                        path_length
+                        if existing_length == 0
+                        else min(
+                            existing_length,
+                            path_length,
+                        )
+                    )
     return shortest_path_by_origin_by_snapshot
 
 
