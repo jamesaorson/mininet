@@ -1,10 +1,7 @@
 #! /bin/bash
 
 brew install bgpstream 
-brew install uv
 
-uv venv
-source .venv/bin/activate
-uv pip install termcolor
-CFLAGS='-I/opt/homebrew/include -L/opt/homebrew/lib' uv pip install pybgpstream
-
+python3 -m venv venv
+source ./venv/bin/activate
+CFLAGS='-I/opt/homebrew/include -L/opt/homebrew/lib' pip install pybgpstream
