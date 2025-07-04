@@ -41,6 +41,8 @@ for elem in stream:
                             "communities": communities,
                         }
                     )
+                    with open("blackholed_prefixes.json", "w+") as f:
+                        json.dump(blackholed_prefixes, f, indent=4, sort_keys=True)
         case "W":
             print(f"Withdrew: {prefix} from {peer_ip} at {timestamp}")
             if peer_ip not in withdrawn_prefixes:
@@ -48,8 +50,5 @@ for elem in stream:
             if prefix not in withdrawn_prefixes[peer_ip]:
                 withdrawn_prefixes[peer_ip][prefix] = set()
             withdrawn_prefixes[peer_ip][prefix].add(timestamp)
-
-with open("blackholed_prefixes.json", "w") as f:
-    json.dump(blackholed_prefixes, f, indent=4, sort_keys=True)
-with open("withdrawn_prefixes.json", "w") as f:
-    json.dump(withdrawn_prefixes, f, indent=4, sort_keys=True)
+            with open("withdrawn_prefixes.json", "w+") as f:
+                json.dump(withdrawn_prefixes, f, indent=4, sort_keys=True)
